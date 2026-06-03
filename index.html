@@ -22,7 +22,7 @@
   --text:#f1f5f9;--text2:#94a3b8;--border:#334155;
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-#app{padding-top:var(--header-h);padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px))}
+#app{padding-top:calc(var(--header-h) + env(safe-area-inset-top,0px));padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 16px)}
 
 /* HEADER */
 .header{position:fixed;top:0;left:0;right:0;height:var(--header-h);background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px;z-index:100;padding-top:env(safe-area-inset-top,0px)}
@@ -41,7 +41,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 /* TOUR */
 .tour-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:300;pointer-events:all}
-.tour-card{position:fixed;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 12px);left:16px;right:16px;background:var(--bg2);border-radius:20px;padding:20px;z-index:402;box-shadow:0 8px 40px rgba(0,0,0,.4)}
+.tour-card{position:fixed;left:16px;right:16px;background:linear-gradient(135deg,#1e3a5f,#0f2d4a);border:1px solid #3b82f655;border-radius:20px;padding:20px;z-index:402;box-shadow:0 8px 40px rgba(0,0,0,.6);transition:top .25s ease}
+.tour-card .tour-title{color:#f1f5f9}
+.tour-card .tour-desc{color:#94a3b8}
 .tour-highlight{position:relative;z-index:401;border-radius:18px;box-shadow:0 0 0 4px rgba(255,255,255,0.25),0 0 0 8px rgba(255,255,255,0.08);pointer-events:none}
 
 /* INSTALL PROMPT */
@@ -764,7 +766,7 @@ function render() {
   });
 
   // Back button
-  const showBack = ['term','category','module','learn-pick','learn','learn-done','disclaimer'].includes(state.page);
+  const showBack = ['term','category','module','learn-pick','learn','learn-done','disclaimer','account'].includes(state.page);
   backBtn.style.display = showBack ? 'flex' : 'none';
 
   // Header title
@@ -807,6 +809,7 @@ function render() {
     case 'learn-done': html = renderLearnDone(); break;
     case 'onboarding': html = renderOnboarding(); break;
     case 'disclaimer': html = renderDisclaimer(); break;
+    case 'account': html = renderAccount(); break;
     default: html = renderHome();
   }
   // Remove old overlays
@@ -875,7 +878,16 @@ function renderHome() {
         </div>`).join('')}
     </div>
 
-    <div id="tour-sasan" data-action="godisclaimer" style="margin-top:20px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer">
+    <div data-action="goaccount" style="margin-top:20px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer">
+      <div style="font-size:24px">💾</div>
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:700;color:var(--text)">Mein Konto</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px">Fortschritt sichern & wiederherstellen</div>
+      </div>
+      <div style="color:var(--text2);font-size:18px">›</div>
+    </div>
+
+    <div id="tour-sasan" data-action="godisclaimer" style="margin-top:10px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer">
       <img src="rund.jpg" onerror="this.style.display='none'" style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--green);flex-shrink:0">
       <div style="flex:1">
         <div style="font-size:15px;font-weight:700;color:var(--text)">Sasan Amir</div>
@@ -1515,6 +1527,65 @@ function renderDisclaimer() {
 }
 
 // ============================================================
+// ACCOUNT (Backup/Restore)
+// ============================================================
+function generateCode() {
+  const data = { n: userName, f: favorites, u: understood, h: highscore };
+  return btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+}
+
+function restoreFromCode(code) {
+  try {
+    const data = JSON.parse(decodeURIComponent(escape(atob(code.trim()))));
+    if (data.n) { saveUserName(data.n); }
+    if (Array.isArray(data.f)) { favorites = data.f; saveFavs(); }
+    if (Array.isArray(data.u)) { understood = data.u; saveUnderstood(); }
+    if (typeof data.h === 'number') { highscore = data.h; localStorage.setItem('highscore', highscore); }
+    return true;
+  } catch(e) { return false; }
+}
+
+function renderAccount() {
+  const code = generateCode();
+  const pct = Math.round((understood.length / TERMS.length) * 100);
+  return `<div class="page">
+    <div style="text-align:center;padding:20px 0 16px">
+      <div style="font-size:48px;margin-bottom:8px">💾</div>
+      <div style="font-size:22px;font-weight:700;color:var(--text)">Mein Konto</div>
+      <div style="font-size:13px;color:var(--text2);margin-top:4px">Fortschritt sichern & auf neuem Gerät wiederherstellen</div>
+    </div>
+
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:12px">📊 Dein Fortschritt</div>
+      <div class="inv-row"><span class="inv-key">Name</span><span class="inv-val">${userName || '–'}</span></div>
+      <div class="inv-row"><span class="inv-key">Begriffe verstanden</span><span class="inv-val" style="color:var(--green)">${understood.length} / ${TERMS.length}</span></div>
+      <div class="inv-row"><span class="inv-key">Favoriten</span><span class="inv-val">${favorites.length}</span></div>
+      <div class="inv-row"><span class="inv-key">Quiz-Highscore</span><span class="inv-val">${highscore} / 10</span></div>
+      <div style="margin-top:12px;background:var(--bg3);border-radius:20px;height:8px;overflow:hidden">
+        <div style="height:100%;background:var(--green);border-radius:20px;width:${pct}%"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px">🔑 Dein Backup-Code</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:10px">Kopiere diesen Code und bewahre ihn auf. Bei der nächsten Installation einfach eingeben.</div>
+      <textarea id="codeOut" readonly style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px;font-size:11px;font-family:monospace;color:var(--text);resize:none;height:80px;word-break:break-all">${code}</textarea>
+      <button class="btn btn-green" data-action="copyCode" style="margin-top:8px">📋 Code kopieren</button>
+    </div>
+
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px">♻️ Fortschritt wiederherstellen</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:10px">Hast du einen Code von einer früheren Installation? Hier eingeben:</div>
+      <textarea id="codeIn" placeholder="Code hier einfügen..." style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px;font-size:11px;font-family:monospace;color:var(--text);resize:none;height:80px;word-break:break-all"></textarea>
+      <button class="btn btn-blue" data-action="restoreCode" style="margin-top:8px">✅ Wiederherstellen</button>
+      <div id="restoreMsg" style="font-size:13px;text-align:center;margin-top:8px"></div>
+    </div>
+
+    <div class="box box-orange">💡 Tipp: Schick dir den Code per WhatsApp an dich selbst oder speichere ihn in Notizen.</div>
+  </div>`;
+}
+
+// ============================================================
 // INSTALL PROMPT
 // ============================================================
 const TOUR_STEPS = [
@@ -1570,8 +1641,8 @@ function renderTourOverlay() {
   <div class="tour-card">
     <div style="display:flex;gap:5px;margin-bottom:16px">${dots}</div>
     <div style="font-size:28px;margin-bottom:6px">${step.icon}</div>
-    <div style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px">${step.title}</div>
-    <div style="font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:14px">${step.desc}</div>
+    <div class="tour-title" style="font-size:17px;font-weight:700;margin-bottom:6px">${step.title}</div>
+    <div class="tour-desc" style="font-size:14px;line-height:1.6;margin-bottom:14px">${step.desc}</div>
     ${feedbackBlock}
     <button class="btn btn-green" data-action="tourNext">${nextLabel}</button>
     ${state.tourStep > 0 ? `<button class="btn btn-outline" data-action="tourSkip" style="margin-top:4px;font-size:13px;padding:10px">Tour überspringen</button>` : ''}
@@ -1582,12 +1653,40 @@ function renderTourOverlay() {
 // EVENTS
 // ============================================================
 function bindEvents() {
-  // Tour highlight
+  // Tour highlight + dynamic card positioning
   if (state.tourActive) {
     const step = TOUR_STEPS[state.tourStep];
+    const card = document.querySelector('.tour-card');
     if (step.id) {
       const el = document.getElementById(step.id);
-      if (el) el.classList.add('tour-highlight');
+      if (el) {
+        el.classList.add('tour-highlight');
+        // Scroll element to top of visible area (below header)
+        const headerH = document.querySelector('.header')?.offsetHeight || 56;
+        const rect = el.getBoundingClientRect();
+        const scrollTop = window.pageYOffset + rect.top - headerH - 12;
+        window.scrollTo({top: scrollTop, behavior: 'smooth'});
+        // Position card just below the element
+        if (card) {
+          setTimeout(() => {
+            const r = el.getBoundingClientRect();
+            const navH = 64 + (window.innerHeight - document.documentElement.clientHeight);
+            const cardH = card.offsetHeight;
+            const spaceBelow = window.innerHeight - r.bottom - navH - 16;
+            if (spaceBelow >= cardH) {
+              card.style.top = (r.bottom + 12) + 'px';
+            } else {
+              // Not enough space — put just below anyway, user can see element above
+              card.style.top = Math.max(r.bottom + 8, headerH + 8) + 'px';
+            }
+          }, 350); // after scroll settles
+        }
+      }
+    } else if (card) {
+      // Feedback step: center in viewport
+      const navH = 80;
+      const midY = (window.innerHeight - navH) / 2 - card.offsetHeight / 2;
+      card.style.top = Math.max(80, midY) + 'px';
     }
   }
   // Search input
@@ -1636,7 +1735,7 @@ document.body.addEventListener('click', e => {
       state.page = 'learn-pick';
     } else if (state.page === 'learn-pick') {
       state.page = 'home';
-    } else if (state.page === 'disclaimer') {
+    } else if (state.page === 'disclaimer' || state.page === 'account') {
       state.page = 'home';
     } else if (state.page === 'term' || state.page === 'module') {
       state.page = state.prevPage || 'home';
@@ -1740,6 +1839,33 @@ document.body.addEventListener('click', e => {
   else if (action === 'editName') {
     const n = prompt('Wie heißt du?', userName);
     if (n !== null && n.trim()) { saveUserName(n.trim()); render(); }
+  }
+  else if (action === 'goaccount') {
+    state.prevPage = state.page;
+    state.page = 'account';
+    window.scrollTo(0,0);
+    render();
+  }
+  else if (action === 'copyCode') {
+    const el = document.getElementById('codeOut');
+    if (el) {
+      navigator.clipboard?.writeText(el.value).catch(() => {});
+      el.select();
+      document.execCommand('copy');
+      const btn = document.querySelector('[data-action="copyCode"]');
+      if (btn) { btn.textContent = '✅ Kopiert!'; setTimeout(() => btn.textContent = '📋 Code kopieren', 2000); }
+    }
+  }
+  else if (action === 'restoreCode') {
+    const el = document.getElementById('codeIn');
+    const msg = document.getElementById('restoreMsg');
+    const code = el?.value || '';
+    if (restoreFromCode(code)) {
+      if (msg) { msg.style.color = 'var(--green)'; msg.textContent = '✅ Fortschritt erfolgreich wiederhergestellt!'; }
+      setTimeout(() => { state.page = 'home'; render(); }, 1500);
+    } else {
+      if (msg) { msg.style.color = 'var(--red)'; msg.textContent = '❌ Ungültiger Code. Bitte nochmal prüfen.'; }
+    }
   }
   else if (action === 'godisclaimer') {
     state.prevPage = state.page;
