@@ -1169,6 +1169,19 @@ function renderInvestments() {
 // SEARCH
 // ============================================================
 function renderSearch() {
+  // 🥚 Easter Egg
+  if (state.searchQ.trim().toLowerCase() === 'lappen') {
+    return `<div style="position:fixed;inset:0;background:#000;z-index:999;display:flex;align-items:center;justify-content:center">
+      <img src="lappen.jpg" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">
+      <div id="lappenBtn" style="position:relative;z-index:2;opacity:0;transition:opacity .6s ease;padding:0 32px;width:100%;text-align:center">
+        <button data-action="lappenBack"
+          style="background:rgba(0,0,0,0.8);color:#fff;border:2px solid rgba(255,255,255,0.8);border-radius:20px;width:100%;padding:18px 20px;font-size:15px;font-weight:700;cursor:pointer;backdrop-filter:blur(12px);line-height:1.4">
+          😔 Ich bin ein Lappen und<br>möchte zurück zur App
+        </button>
+      </div>
+    </div>`;
+  }
+
   const results = state.searchQ.length > 1 ? termSearch(state.searchQ) : [];
   const list = results.map(t => termRow(t)).join('');
   return `<div class="page">
@@ -1887,7 +1900,7 @@ function renderModuleWarnung() {
     <div class="card-sm"><strong>🎮 Meme-Aktien</strong><br><span style="color:var(--text2);font-size:13px">GameStop, AMC, etc.: Hypes enden fast immer mit Verlusten für Nachkäufer. Die ersten verkaufen, du hältst den Bag.</span></div>
     <div class="card-sm"><strong>🚀 "Hot Tips" von Social Media</strong><br><span style="color:var(--text2);font-size:13px">Wer dir auf TikTok/Instagram Reichtum verspricht, verdient an deinen Verlusten oder an Affiliate-Links.</span></div>
     <div class="card-sm"><strong>⏰ Day-Trading</strong><br><span style="color:var(--text2);font-size:13px">Studien zeigen: >70% der Day-Trader verlieren Geld. Du konkurrierst mit Algorithmen und Vollzeit-Profis.</span></div>
-    <div class="card-sm"><strong>₿ Krypto-Zocken</strong><br><span style="color:var(--text2);font-size:13px">Krypto kann ein kleiner Teil des Portfolios sein — aber als Hauptanlage mit Hebel? Rezept für Ruin.</span></div>
+    <div class="card-sm"><strong>₿ Krypto</strong><br><span style="color:var(--text2);font-size:13px">Mit Krypto kann man Geld machen — aber es ist hochgradig unberechenbar. Behandle es wie Spielgeld: maximal 5–10% des Portfolios, nur Geld das du komplett verlieren kannst. Keine sichere Wertanlage, kein Ersatz für ETFs.</span></div>
     <div class="box box-green"><strong>Was wirklich funktioniert:</strong><br>MSCI World / FTSE All-World ETF Sparplan + buy-and-hold + Zeit. Langweilig — aber es klappt.</div>
   </div>`;
 }
@@ -2478,6 +2491,10 @@ function bindEvents() {
       setTimeout(() => { const el = document.getElementById('searchInput'); if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length);} }, 0);
     });
   }
+  // Lappen Easter Egg button reveal
+  const lappenBtn = document.getElementById('lappenBtn');
+  if (lappenBtn) setTimeout(() => { lappenBtn.style.opacity = '1'; }, 1000);
+
   // Name input enter key
   const ni = document.getElementById('nameInput');
   if (ni) {
@@ -2590,10 +2607,16 @@ document.body.addEventListener('click', e => {
   const action = el.dataset.action;
   const id = el.dataset.id;
 
-  if (action === 'nav') {
+  if (action === 'lappenBack') {
+    state.searchQ = '';
+    state.page = 'home';
+    render();
+  }
+  else if (action === 'nav') {
     state.prevPage = state.page;
     state.page = id;
     if (id === 'quiz' && state.quizDone) { state.quizDone = false; state.quizQuestions = []; }
+    if (id === 'search') state.searchQ = '';
     render();
   }
   else if (action === 'back') {
