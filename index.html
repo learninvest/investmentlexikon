@@ -1826,32 +1826,23 @@ function bindEvents() {
       const el = document.getElementById(step.id);
       if (el) {
         el.classList.add('tour-highlight');
-        // Scroll element to top of visible area (below header)
+        // Scroll element into view (top, below header)
         const headerH = document.querySelector('.header')?.offsetHeight || 56;
         const rect = el.getBoundingClientRect();
         const scrollTop = window.pageYOffset + rect.top - headerH - 12;
         window.scrollTo({top: scrollTop, behavior: 'smooth'});
-        // Position card just below the element
-        if (card) {
-          setTimeout(() => {
-            const r = el.getBoundingClientRect();
-            const navH = 64 + (window.innerHeight - document.documentElement.clientHeight);
-            const cardH = card.offsetHeight;
-            const spaceBelow = window.innerHeight - r.bottom - navH - 16;
-            if (spaceBelow >= cardH) {
-              card.style.top = (r.bottom + 12) + 'px';
-            } else {
-              // Not enough space — put just below anyway, user can see element above
-              card.style.top = Math.max(r.bottom + 8, headerH + 8) + 'px';
-            }
-          }, 350); // after scroll settles
-        }
       }
-    } else if (card) {
-      // Feedback step: center in viewport
-      const navH = 80;
-      const midY = (window.innerHeight - navH) / 2 - card.offsetHeight / 2;
-      card.style.top = Math.max(80, midY) + 'px';
+    }
+    // Always center card vertically in available viewport
+    if (card) {
+      setTimeout(() => {
+        const headerH = document.querySelector('.header')?.offsetHeight || 56;
+        const navH = 80;
+        const availH = window.innerHeight - headerH - navH;
+        const cardH = card.offsetHeight;
+        const cardTop = headerH + Math.max(0, (availH - cardH) / 2);
+        card.style.top = cardTop + 'px';
+      }, 360);
     }
   }
   // Search input
