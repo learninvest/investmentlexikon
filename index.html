@@ -836,6 +836,28 @@ function render() {
 function renderHome() {
   const dayIdx = Math.floor(Date.now() / 86400000) % TERMS.length;
   const dayTerm = TERMS[dayIdx];
+  const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isAndroid = /Android/.test(navigator.userAgent);
+  const installBanner = isPWA ? '' : `
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:14px 16px;margin-bottom:16px">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px">📲 Als App installieren</div>
+      ${isIOS ? `
+        <div style="font-size:13px;color:var(--text2);line-height:1.7">
+          1. Tippe unten in Safari auf das <strong style="color:var(--text)">Teilen-Symbol</strong> □↑<br>
+          2. Wähle <strong style="color:var(--text)">„Zum Home-Bildschirm"</strong><br>
+          3. Fertig — App erscheint als Icon!
+        </div>` : isAndroid ? `
+        <div style="font-size:13px;color:var(--text2);line-height:1.7">
+          1. Tippe oben rechts auf die <strong style="color:var(--text)">drei Punkte ⋮</strong><br>
+          2. Wähle <strong style="color:var(--text)">„Zum Startbildschirm hinzufügen"</strong><br>
+          3. Fertig — App erscheint als Icon!
+        </div>` : `
+        <div style="font-size:13px;color:var(--text2);line-height:1.7">
+          <strong style="color:var(--text)">iPhone/Safari:</strong> Teilen □↑ → „Zum Home-Bildschirm"<br>
+          <strong style="color:var(--text)">Android/Chrome:</strong> Drei Punkte ⋮ → „Zum Startbildschirm"
+        </div>`}
+    </div>`;
   const catGrid = CATEGORIES.map(c => `
     <div class="cat-card" data-action="gocat" data-id="${c.id}">
       <div class="cat-icon">${c.icon}</div>
@@ -843,6 +865,7 @@ function renderHome() {
     </div>`).join('');
 
   return `<div class="page">
+    ${installBanner}
     <div id="tour-day" class="day-term" data-action="goterm" data-id="${dayTerm.id}">
       <div class="day-term-label">Begriff des Tages 💡</div>
       <div class="day-term-name">${dayTerm.icon} ${dayTerm.name}</div>
