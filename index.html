@@ -36,7 +36,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .nav-btn .nav-icon{font-size:22px;line-height:1}
 
 /* PAGES */
-.page{padding:16px;max-width:600px;margin:0 auto}
+.page{padding:16px 16px 24px;max-width:600px;margin:0 auto}
+@media(max-width:430px){.page{padding:12px 12px 28px}}
+
+/* TOUR */
+.tour-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:300;pointer-events:all}
+.tour-card{position:fixed;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 12px);left:16px;right:16px;background:var(--bg2);border-radius:20px;padding:20px;z-index:402;box-shadow:0 8px 40px rgba(0,0,0,.4)}
+.tour-highlight{position:relative;z-index:401;border-radius:18px;box-shadow:0 0 0 4px rgba(255,255,255,0.25),0 0 0 8px rgba(255,255,255,0.08);pointer-events:none}
+
+/* INSTALL PROMPT */
+.install-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:500;display:flex;align-items:flex-end;padding:16px}
+.install-card{background:var(--bg2);border-radius:20px;padding:24px;width:100%;max-width:500px;margin:0 auto}
 
 /* SEARCH */
 .search-box{background:var(--bg3);border:none;border-radius:14px;padding:12px 16px;width:100%;font-size:16px;color:var(--text);outline:none}
@@ -701,6 +711,10 @@ let state = {
   learnTerms: [],
   learnIdx: 0,
   learnCatId: null,
+  tourActive: false,
+  tourStep: 0,
+  installShown: false,
+  installDismissed: true,
 };
 
 let favorites = JSON.parse(localStorage.getItem('favs') || '[]');
@@ -795,7 +809,21 @@ function render() {
     case 'disclaimer': html = renderDisclaimer(); break;
     default: html = renderHome();
   }
+  // Remove old overlays
+  document.querySelectorAll('#tourOverlay,.tour-overlay,.tour-card,#installOverlay,.install-overlay').forEach(e => e.remove());
+
   app.innerHTML = html;
+
+  // Tour overlay (injected after app so it sits above)
+  if (state.tourActive && state.page === 'home') {
+    document.body.insertAdjacentHTML('beforeend', renderTourOverlay());
+  }
+
+  // Install prompt
+  if (state.installShown && !state.installDismissed) {
+    document.body.insertAdjacentHTML('beforeend', renderInstallPrompt());
+  }
+
   bindEvents();
 }
 
@@ -812,16 +840,18 @@ function renderHome() {
     </div>`).join('');
 
   return `<div class="page">
-    <div class="day-term" data-action="goterm" data-id="${dayTerm.id}">
+    <div id="tour-day" class="day-term" data-action="goterm" data-id="${dayTerm.id}">
       <div class="day-term-label">Begriff des Tages 💡</div>
       <div class="day-term-name">${dayTerm.icon} ${dayTerm.name}</div>
       <div class="day-term-short">${dayTerm.shortExplanation.substring(0,80)}…</div>
     </div>
 
-    <div class="section-title">Was kann ich mit meinem Geld machen?</div>
-    ${renderInvestments()}
+    <div style="margin-top:20px" id="tour-invest">
+      <div class="section-title" style="margin-top:0">Was kann ich mit meinem Geld machen?</div>
+      ${renderInvestments()}
+    </div>
 
-    <div data-action="golearn" style="background:linear-gradient(135deg,#8b5cf6,#3b82f6);border-radius:16px;padding:18px 20px;margin-bottom:16px;cursor:pointer;display:flex;align-items:center;gap:14px">
+    <div id="tour-learn" data-action="golearn" style="background:linear-gradient(135deg,#8b5cf6,#3b82f6);border-radius:16px;padding:18px 20px;margin-bottom:20px;margin-top:4px;cursor:pointer;display:flex;align-items:center;gap:14px">
       <div style="font-size:40px">🎓</div>
       <div>
         <div style="color:#fff;font-size:17px;font-weight:700;margin-bottom:3px">Starte dein Wissen</div>
@@ -833,18 +863,28 @@ function renderHome() {
       </div>
     </div>
 
-    <div class="section-title">Kategorien</div>
-    <div class="grid-2">${catGrid}</div>
+    <div id="tour-cats" style="margin-top:4px">
+      <div class="section-title" style="margin-top:0">Kategorien</div>
+      <div class="grid-2">${catGrid}</div>
+      <div class="section-title">Spezial-Module</div>
+      ${MODULES.map(m => `
+        <div class="module-card" data-action="gomodule" data-id="${m.id}">
+          <div class="module-icon">${m.icon}</div>
+          <div class="module-title">${m.title}</div>
+          <div class="module-desc">${m.desc}</div>
+        </div>`).join('')}
+    </div>
 
-    <div class="section-title">Spezial-Module</div>
-    ${MODULES.map(m => `
-      <div class="module-card" data-action="gomodule" data-id="${m.id}">
-        <div class="module-icon">${m.icon}</div>
-        <div class="module-title">${m.title}</div>
-        <div class="module-desc">${m.desc}</div>
-      </div>`).join('')}
+    <div id="tour-sasan" data-action="godisclaimer" style="margin-top:20px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer">
+      <img src="rund.jpg" onerror="this.style.display='none'" style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--green);flex-shrink:0">
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:700;color:var(--text)">Sasan Amir</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px">Ersteller · Über diese App & Disclaimer</div>
+      </div>
+      <div style="color:var(--text2);font-size:18px">›</div>
+    </div>
 
-    <div class="footer-note" data-action="godisclaimer" style="cursor:pointer">Kein Ersatz für Anlageberatung. Alle Angaben ohne Gewähr.<br><span style="color:var(--blue);text-decoration:underline">Über diese App & Disclaimer →</span></div>
+    <div class="footer-note" style="margin-top:8px">Kein Ersatz für Anlageberatung. Alle Angaben ohne Gewähr.</div>
   </div>`;
 }
 
@@ -1475,9 +1515,81 @@ function renderDisclaimer() {
 }
 
 // ============================================================
+// INSTALL PROMPT
+// ============================================================
+const TOUR_STEPS = [
+  {id:'tour-day',   icon:'💡', title:'Begriff des Tages',        desc:'Jeden Tag ein neuer Begriff — antippen für die volle Erklärung mit Beispiel und Merksatz.'},
+  {id:'tour-invest',icon:'💰', title:'Was kann ich mit meinem Geld machen?', desc:'Alle Anlageklassen auf einen Blick — mit Risiko, Rendite und Aufwand bewertet.'},
+  {id:'tour-learn', icon:'🎓', title:'Starte dein Wissen',        desc:'Lerne alle Begriffe Schritt für Schritt. Wähle eine Kategorie oder geh alles durch — dein Fortschritt wird gespeichert.'},
+  {id:'tour-cats',  icon:'📚', title:'Kategorien & Module',       desc:'10 Kategorien, 45+ Begriffe, 4 Spezialmodule — von ETF-Basics bis "Warnung vor Zocken".'},
+  {id:'tour-sasan', icon:'👤', title:'Über den Ersteller',        desc:'Sasan Amir hat diese App gebaut, damit du die Sprache der Börse lernst. Hier findest du auch den Disclaimer.'},
+  {id:null,         icon:'✉️', title:'Hast du Feedback für Sasan?', desc:'Diese App wächst mit deinem Feedback. Schick eine Nachricht direkt an Sasan!', feedback:true},
+];
+
+function renderInstallPrompt() {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isAndroid = /Android/.test(navigator.userAgent);
+  const instructions = isAndroid
+    ? `<div class="card-sm" style="margin-bottom:8px"><strong>Android / Chrome:</strong><br><span style="color:var(--text2);font-size:13px">1. Tippe auf die <strong>⋮ drei Punkte</strong> oben rechts<br>2. Wähle <strong>„Zum Startbildschirm hinzufügen"</strong><br>3. Fertig — App erscheint als Icon!</span></div>`
+    : `<div class="card-sm" style="margin-bottom:8px"><strong>iPhone / Safari:</strong><br><span style="color:var(--text2);font-size:13px">1. Öffne diese Seite in <strong>Safari</strong> (nicht Chrome!)<br>2. Tippe unten auf das <strong>Teilen-Symbol</strong> □↑<br>3. Wähle <strong>„Zum Home-Bildschirm"</strong><br>4. Fertig — App erscheint als Icon!</span></div>`;
+
+  return `<div class="install-overlay" id="installOverlay">
+    <div class="install-card">
+      <div style="text-align:center;margin-bottom:20px">
+        <div style="font-size:48px;margin-bottom:8px">📲</div>
+        <div style="font-size:20px;font-weight:700;color:var(--text)">Als App installieren</div>
+        <div style="font-size:13px;color:var(--text2);margin-top:4px">Kostenlos · Funktioniert offline · Kein App Store</div>
+      </div>
+      ${instructions}
+      ${!isIOS && !isAndroid ? `
+      <div class="card-sm" style="margin-bottom:8px"><strong>iPhone / Safari:</strong><br><span style="color:var(--text2);font-size:13px">Safari öffnen → Teilen-Symbol □↑ → „Zum Home-Bildschirm"</span></div>
+      <div class="card-sm" style="margin-bottom:8px"><strong>Android / Chrome:</strong><br><span style="color:var(--text2);font-size:13px">⋮ Drei Punkte → „Zum Startbildschirm hinzufügen"</span></div>` : ''}
+      <button class="btn btn-green" data-action="closeInstall" style="margin-top:8px">Verstanden, weiter →</button>
+      <button class="btn btn-outline" data-action="closeInstall" style="font-size:13px;padding:10px">Später</button>
+    </div>
+  </div>`;
+}
+
+function renderTourOverlay() {
+  if (!state.tourActive) return '';
+  const step = TOUR_STEPS[state.tourStep];
+  const total = TOUR_STEPS.length;
+  const dots = TOUR_STEPS.map((_,i) =>
+    `<div style="width:${i===state.tourStep?'20px':'8px'};height:8px;border-radius:4px;background:${i===state.tourStep?'var(--green)':'var(--border)'};transition:width .3s"></div>`
+  ).join('');
+
+  const feedbackBlock = step.feedback ? `
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <a href="mailto:sasan@example.com?subject=Feedback Investmentlexikon" class="btn btn-outline" style="flex:1;text-decoration:none;text-align:center;padding:12px;font-size:14px;font-weight:600">✉️ E-Mail</a>
+      <a href="https://instagram.com/sasanamir" target="_blank" class="btn btn-outline" style="flex:1;text-decoration:none;text-align:center;padding:12px;font-size:14px;font-weight:600">📸 Instagram</a>
+    </div>` : '';
+
+  const nextLabel = state.tourStep < total - 1 ? 'Weiter →' : '🚀 App starten!';
+
+  return `<div class="tour-overlay" id="tourOverlay"></div>
+  <div class="tour-card">
+    <div style="display:flex;gap:5px;margin-bottom:16px">${dots}</div>
+    <div style="font-size:28px;margin-bottom:6px">${step.icon}</div>
+    <div style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px">${step.title}</div>
+    <div style="font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:14px">${step.desc}</div>
+    ${feedbackBlock}
+    <button class="btn btn-green" data-action="tourNext">${nextLabel}</button>
+    ${state.tourStep > 0 ? `<button class="btn btn-outline" data-action="tourSkip" style="margin-top:4px;font-size:13px;padding:10px">Tour überspringen</button>` : ''}
+  </div>`;
+}
+
+// ============================================================
 // EVENTS
 // ============================================================
 function bindEvents() {
+  // Tour highlight
+  if (state.tourActive) {
+    const step = TOUR_STEPS[state.tourStep];
+    if (step.id) {
+      const el = document.getElementById(step.id);
+      if (el) el.classList.add('tour-highlight');
+    }
+  }
   // Search input
   const si = document.getElementById('searchInput');
   if (si) {
@@ -1590,8 +1702,40 @@ document.body.addEventListener('click', e => {
   else if (action === 'saveName') {
     const input = document.getElementById('nameInput');
     const n = input ? input.value.trim() : '';
-    if (n) { saveUserName(n); state.page = 'home'; render(); }
-    else { input && input.focus(); }
+    if (n) {
+      saveUserName(n);
+      state.page = 'home';
+      state.tourActive = true;
+      state.tourStep = 0;
+      // Show install prompt first if not PWA, mobile only
+      const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      const installDone = localStorage.getItem('installDone');
+      if (!isPWA && !installDone && isMobile) {
+        state.installShown = true;
+        state.installDismissed = false;
+      }
+      render();
+    } else { input && input.focus(); }
+  }
+  else if (action === 'closeInstall') {
+    localStorage.setItem('installDone','1');
+    state.installDismissed = true;
+    document.querySelectorAll('.install-overlay,#installOverlay').forEach(e => e.remove());
+  }
+  else if (action === 'tourNext') {
+    state.tourStep++;
+    if (state.tourStep >= TOUR_STEPS.length) {
+      state.tourActive = false;
+      state.tourStep = 0;
+    }
+    window.scrollTo(0,0);
+    render();
+  }
+  else if (action === 'tourSkip') {
+    state.tourActive = false;
+    state.tourStep = 0;
+    render();
   }
   else if (action === 'editName') {
     const n = prompt('Wie heißt du?', userName);
@@ -1657,7 +1801,18 @@ document.body.addEventListener('click', e => {
 // ============================================================
 // INIT
 // ============================================================
-if (!userName) state.page = 'onboarding';
+if (!userName) {
+  state.page = 'onboarding';
+} else {
+  // Existing user: show install prompt once if not PWA, mobile only
+  const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  const installDone = localStorage.getItem('installDone');
+  if (!isPWA && !installDone && isMobile) {
+    state.installShown = true;
+    state.installDismissed = false;
+  }
+}
 render();
 </script>
 </body>
