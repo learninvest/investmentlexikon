@@ -717,6 +717,7 @@ let state = {
   tourStep: 0,
   installShown: false,
   installDismissed: true,
+  onboardingStep: 0,
 };
 
 let favorites = JSON.parse(localStorage.getItem('favs') || '[]');
@@ -1220,9 +1221,9 @@ function renderCalcZinseszins() {
           <span style="color:var(--text2)">Jahr ${y}:</span>
           <strong style="color:var(--text)">${fmt(data[y]?.total||0)}</strong>
         </div>`).join('')}
-      ${turningPoint ? `<div style="background:#451a0322;border:1px solid #f59e0b44;border-radius:10px;padding:6px 10px;font-size:12px">
-        <span style="color:#f59e0b">⚡ Turning Point:</span>
-        <strong style="color:var(--text)">Jahr ${turningPoint}</strong>
+      ${turningPoint ? `<div style="background:#451a0322;border:1px solid #f59e0b44;border-radius:10px;padding:6px 10px;font-size:12px;flex-basis:100%">
+        <span style="color:#f59e0b">⚡ Ab Jahr ${turningPoint}:</span>
+        <strong style="color:var(--text)"> deine Rendite ist größer als deine Einzahlung</strong>
       </div>` : ''}
       ${millionYear ? `<div style="background:#064e3b22;border:1px solid var(--green);border-radius:10px;padding:6px 10px;font-size:12px">
         <span style="color:var(--green)">🏆 Erste Million:</span>
@@ -1593,6 +1594,61 @@ function renderLearnDone() {
 // ONBOARDING & DISCLAIMER
 // ============================================================
 function renderOnboarding() {
+  const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isAndroid = /Android/.test(navigator.userAgent);
+
+  // Skip install step if already PWA
+  if (isPWA || state.onboardingStep === 1) return renderOnboardingName();
+
+  // Install step
+  const iosBlock = `
+    <div style="margin-bottom:12px">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">🍎 iPhone — Safari</div>
+      <div style="background:var(--bg3);border-radius:12px;padding:12px;font-size:13px;color:var(--text2);line-height:1.8">
+        1. Tippe unten <strong style="color:var(--text)">neben dem Link auf die drei Punkte •••</strong><br>
+        2. Tippe auf <strong style="color:var(--text)">„Teilen"</strong><br>
+        3. Scrolle runter und wähle <strong style="color:var(--text)">„Zum Home-Bildschirm hinzufügen"</strong><br>
+        4. Tippe oben rechts auf <strong style="color:var(--text)">„Hinzufügen"</strong> — fertig!
+      </div>
+    </div>
+    <div style="margin-bottom:16px">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">🍎 iPhone — Chrome</div>
+      <div style="background:var(--bg3);border-radius:12px;padding:12px;font-size:13px;color:var(--text2);line-height:1.8">
+        1. Tippe oben rechts <strong style="color:var(--text)">neben der Adresszeile auf das Symbol □↑</strong><br>
+        2. Tippe auf <strong style="color:var(--text)">„Mehr anzeigen"</strong><br>
+        3. Wähle <strong style="color:var(--text)">„Zum Startbildschirm hinzufügen"</strong><br>
+        4. Tippe auf <strong style="color:var(--text)">„Hinzufügen"</strong> — fertig!
+      </div>
+    </div>`;
+
+  const androidBlock = `
+    <div style="margin-bottom:16px">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">🤖 Android — Chrome</div>
+      <div style="background:var(--bg3);border-radius:12px;padding:12px;font-size:13px;color:var(--text2);line-height:1.8">
+        1. Tippe oben rechts auf die <strong style="color:var(--text)">drei Punkte ⋮</strong><br>
+        2. Wähle <strong style="color:var(--text)">„Zum Startbildschirm hinzufügen"</strong><br>
+        3. Tippe auf <strong style="color:var(--text)">„Hinzufügen"</strong> — fertig!
+      </div>
+    </div>`;
+
+  const instructions = isIOS ? iosBlock : isAndroid ? androidBlock : iosBlock + androidBlock;
+
+  return `<div class="page" style="min-height:calc(100vh - 140px)">
+    <div style="text-align:center;margin-bottom:24px;padding-top:12px">
+      <div style="font-size:56px;margin-bottom:10px">📲</div>
+      <div style="font-size:22px;font-weight:700;color:var(--text);margin-bottom:6px">Investmentlexikon</div>
+      <div style="font-size:14px;color:var(--text2)">Installiere die App zuerst auf deinem Handy —<br>kostenlos, kein App Store nötig!</div>
+    </div>
+
+    ${instructions}
+
+    <button class="btn btn-green" data-action="onboardingNext">✅ App installiert — weiter!</button>
+    <button class="btn btn-outline" data-action="onboardingNext" style="font-size:13px;padding:10px;margin-top:4px">Später installieren →</button>
+  </div>`;
+}
+
+function renderOnboardingName() {
   return `<div class="page" style="display:flex;flex-direction:column;justify-content:center;min-height:calc(100vh - 140px)">
     <div style="text-align:center;margin-bottom:32px">
       <div style="font-size:64px;margin-bottom:16px">📈</div>
@@ -1987,6 +2043,11 @@ document.body.addEventListener('click', e => {
   }
   else if (action === 'learnBack') {
     if (state.learnIdx > 0) { state.learnIdx--; window.scrollTo(0,0); render(); }
+  }
+  else if (action === 'onboardingNext') {
+    state.onboardingStep = 1;
+    window.scrollTo(0,0);
+    render();
   }
   else if (action === 'saveName') {
     const input = document.getElementById('nameInput');
