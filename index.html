@@ -1935,7 +1935,7 @@ function getChartExample(termId) {
     </svg>`,
 
     'ausbruch': miniChart([[0,40],[1,42],[2,41],[3,43],[4,42],[5,43],[6,44],[7,43],[8,50],[9,56],[10,63]],
-      '#8b5cf6',[{x:0,text:'Konsolidierung'},{x,text:'Ausbruch!'}],
+      '#8b5cf6',[{x:0,text:'Konsolidierung'},{x:8,text:'Ausbruch!'}],
       [{x:8,y:50,label:'🚀 Breakout',color:'#8b5cf6'}]),
 
     'moving-average': miniChart([[0,50],[1,48],[2,53],[3,45],[4,55],[5,52],[6,58],[7,54],[8,60],[9,57],[10,65]],
@@ -2609,6 +2609,11 @@ document.body.addEventListener('click', e => {
       state.page = 'learn-pick';
     } else if (state.page === 'learn-pick') {
       state.page = 'home';
+    } else if (state.page === 'category') {
+      state.page = 'home';
+      render();
+      setTimeout(() => window.scrollTo(0, state.homeScrollY || 0), 50);
+      return;
     } else if (state.page === 'disclaimer' || state.page === 'account') {
       state.page = 'home';
     } else if (state.page === 'term' || state.page === 'module') {
@@ -2627,6 +2632,7 @@ document.body.addEventListener('click', e => {
     render();
   }
   else if (action === 'gocat') {
+    state.homeScrollY = window.scrollY;
     state.prevPage = state.page;
     state.categoryId = id;
     state.catTermIdx = 0;
