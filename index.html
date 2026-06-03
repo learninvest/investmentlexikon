@@ -30,7 +30,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .icon-btn{width:36px;height:36px;border:none;background:var(--bg3);border-radius:10px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text)}
 
 /* BOTTOM NAV */
-.nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);display:flex;padding-bottom:env(safe-area-inset-bottom,0px);z-index:100}
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);display:flex;padding-bottom:env(safe-area-inset-bottom,0px);z-index:100;transform:translateZ(0);will-change:transform}
 .nav-btn{flex:1;border:none;background:none;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--text2);font-size:10px;font-weight:500}
 .nav-btn.active{color:var(--green)}
 .nav-btn .nav-icon{font-size:22px;line-height:1}
@@ -40,7 +40,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 @media(max-width:430px){.page{padding:12px 12px 28px}}
 
 /* TOUR */
-.tour-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:300;pointer-events:all}
+.tour-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:300;pointer-events:none}
 .tour-card{position:fixed;left:16px;right:16px;background:linear-gradient(135deg,#1e3a5f,#0f2d4a);border:1px solid #3b82f655;border-radius:20px;padding:20px;z-index:402;box-shadow:0 8px 40px rgba(0,0,0,.6);transition:top .25s ease}
 .tour-card .tour-title{color:#f1f5f9}
 .tour-card .tour-desc{color:#94a3b8}
@@ -823,10 +823,7 @@ function render() {
     document.body.insertAdjacentHTML('beforeend', renderTourOverlay());
   }
 
-  // Install prompt
-  if (state.installShown && !state.installDismissed) {
-    document.body.insertAdjacentHTML('beforeend', renderInstallPrompt());
-  }
+  // Install prompt disabled — handled by onboarding
 
   bindEvents();
 }
@@ -840,25 +837,10 @@ function renderHome() {
   const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
   const isAndroid = /Android/.test(navigator.userAgent);
-  const installBanner = isPWA ? '' : `
-    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:14px 16px;margin-bottom:16px">
-      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px">📲 Als App installieren</div>
-      ${isIOS ? `
-        <div style="font-size:13px;color:var(--text2);line-height:1.7">
-          1. Tippe unten in Safari auf das <strong style="color:var(--text)">Teilen-Symbol</strong> □↑<br>
-          2. Wähle <strong style="color:var(--text)">„Zum Home-Bildschirm"</strong><br>
-          3. Fertig — App erscheint als Icon!
-        </div>` : isAndroid ? `
-        <div style="font-size:13px;color:var(--text2);line-height:1.7">
-          1. Tippe oben rechts auf die <strong style="color:var(--text)">drei Punkte ⋮</strong><br>
-          2. Wähle <strong style="color:var(--text)">„Zum Startbildschirm hinzufügen"</strong><br>
-          3. Fertig — App erscheint als Icon!
-        </div>` : `
-        <div style="font-size:13px;color:var(--text2);line-height:1.7">
-          <strong style="color:var(--text)">iPhone/Safari:</strong> Teilen □↑ → „Zum Home-Bildschirm"<br>
-          <strong style="color:var(--text)">Android/Chrome:</strong> Drei Punkte ⋮ → „Zum Startbildschirm"
-        </div>`}
-    </div>`;
+  const isMobile = isIOS || isAndroid;
+  // Install hint: only show if not PWA, mobile, and not already done
+  const installDone = localStorage.getItem('installDone');
+  const showInstallHint = !isPWA && isMobile && !installDone;
   const catGrid = CATEGORIES.map(c => `
     <div class="cat-card" data-action="gocat" data-id="${c.id}">
       <div class="cat-icon">${c.icon}</div>
@@ -866,7 +848,6 @@ function renderHome() {
     </div>`).join('');
 
   return `<div class="page">
-    ${installBanner}
     <div id="tour-day" class="day-term" data-action="goterm" data-id="${dayTerm.id}">
       <div class="day-term-label">Begriff des Tages 💡</div>
       <div class="day-term-name">${dayTerm.icon} ${dayTerm.name}</div>
@@ -920,6 +901,15 @@ function renderHome() {
       <div style="color:var(--text2);font-size:18px">›</div>
     </div>
 
+    ${showInstallHint ? `<div style="margin-top:10px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:14px 16px">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px">📲 Als App installieren</div>
+      ${isIOS ? `<div style="font-size:13px;color:var(--text2);line-height:1.8">
+        <strong style="color:var(--text)">Safari:</strong> Drei Punkte ••• neben dem Link → Teilen → Zum Home-Bildschirm<br>
+        <strong style="color:var(--text)">Chrome:</strong> Symbol □↑ neben Adresszeile → Mehr anzeigen → Zum Startbildschirm
+      </div>` : `<div style="font-size:13px;color:var(--text2);line-height:1.8">
+        Drei Punkte ⋮ oben rechts → „Zum Startbildschirm hinzufügen"
+      </div>`}
+    </div>` : ''}
     <div class="footer-note" style="margin-top:8px">Kein Ersatz für Anlageberatung. Alle Angaben ohne Gewähr.</div>
   </div>`;
 }
@@ -2045,6 +2035,7 @@ document.body.addEventListener('click', e => {
     if (state.learnIdx > 0) { state.learnIdx--; window.scrollTo(0,0); render(); }
   }
   else if (action === 'onboardingNext') {
+    localStorage.setItem('installDone','1');
     state.onboardingStep = 1;
     window.scrollTo(0,0);
     render();
