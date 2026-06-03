@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Investmentlexikon">
+<meta name="theme-color" content="#10b981">
+<title>Investmentlexikon</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#f8fafc;--bg2:#ffffff;--bg3:#f1f5f9;
+  --text:#0f172a;--text2:#475569;--border:#e2e8f0;
+  --green:#10b981;--red:#ef4444;--orange:#f59e0b;
+  --blue:#3b82f6;--purple:#8b5cf6;--pink:#ec4899;
+  --nav-h:64px;--header-h:56px;
+}
+[data-dark]{
+  --bg:#0f172a;--bg2:#1e293b;--bg3:#334155;
+  --text:#f1f5f9;--text2:#94a3b8;--border:#334155;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+#app{padding-top:var(--header-h);padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px))}
+
+/* HEADER */
+.header{position:fixed;top:0;left:0;right:0;height:var(--header-h);background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px;z-index:100;padding-top:env(safe-area-inset-top,0px)}
+.header-title{flex:1;font-size:17px;font-weight:600;color:var(--text)}
+.icon-btn{width:36px;height:36px;border:none;background:var(--bg3);border-radius:10px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text)}
+
+/* BOTTOM NAV */
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);display:flex;padding-bottom:env(safe-area-inset-bottom,0px);z-index:100}
+.nav-btn{flex:1;border:none;background:none;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--text2);font-size:10px;font-weight:500}
+.nav-btn.active{color:var(--green)}
+.nav-btn .nav-icon{font-size:22px;line-height:1}
+
+/* PAGES */
+.page{padding:16px;max-width:600px;margin:0 auto}
+
+/* SEARCH */
+.search-box{background:var(--bg3);border:none;border-radius:14px;padding:12px 16px;width:100%;font-size:16px;color:var(--text);outline:none}
+.search-box::placeholder{color:var(--text2)}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px}
+.card-sm{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.cat-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;transition:transform .1s}
+.cat-card:active{transform:scale(.97)}
+.cat-icon{font-size:28px;margin-bottom:6px}
+.cat-name{font-size:12px;font-weight:600;color:var(--text)}
+
+/* BADGES */
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600}
+.badge-green{background:#d1fae5;color:#065f46}
+.badge-blue{background:#dbeafe;color:#1e40af}
+.badge-orange{background:#fef3c7;color:#92400e}
+.badge-red{background:#fee2e2;color:#991b1b}
+.badge-purple{background:#ede9fe;color:#5b21b6}
+[data-dark] .badge-green{background:#064e3b;color:#6ee7b7}
+[data-dark] .badge-blue{background:#1e3a5f;color:#93c5fd}
+[data-dark] .badge-orange{background:#451a03;color:#fcd34d}
+[data-dark] .badge-red{background:#450a0a;color:#fca5a5}
+[data-dark] .badge-purple{background:#2e1065;color:#c4b5fd}
+
+/* INFO BOXES */
+.box{border-radius:12px;padding:14px;margin-bottom:12px;font-size:14px;line-height:1.6}
+.box-blue{background:#eff6ff;border-left:3px solid var(--blue);color:#1e40af}
+.box-green{background:#ecfdf5;border-left:3px solid var(--green);color:#065f46}
+.box-orange{background:#fffbeb;border-left:3px solid var(--orange);color:#92400e}
+.box-red{background:#fef2f2;border-left:3px solid var(--red);color:#991b1b}
+[data-dark] .box-blue{background:#1e3a5f22;color:#93c5fd}
+[data-dark] .box-green{background:#064e3b22;color:#6ee7b7}
+[data-dark] .box-orange{background:#451a0322;color:#fcd34d}
+[data-dark] .box-red{background:#450a0a22;color:#fca5a5}
+
+/* TERM LIST */
+.term-row{display:flex;align-items:center;padding:12px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;gap:12px}
+.term-row:active{background:var(--bg3)}
+.term-icon-wrap{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.term-info{flex:1;min-width:0}
+.term-name{font-size:15px;font-weight:600;color:var(--text)}
+.term-short{font-size:13px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chevron{color:var(--text2);font-size:18px}
+
+/* BUTTONS */
+.btn{border:none;border-radius:12px;padding:13px 20px;font-size:15px;font-weight:600;cursor:pointer;width:100%;margin-bottom:8px;transition:opacity .15s}
+.btn:active{opacity:.8}
+.btn-green{background:var(--green);color:#fff}
+.btn-outline{background:var(--bg3);color:var(--text);border:1px solid var(--border)}
+.btn-blue{background:var(--blue);color:#fff}
+
+/* STARS */
+.stars{color:#f59e0b;font-size:14px;letter-spacing:2px}
+
+/* CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:13px;cursor:pointer;color:var(--text)}
+
+/* QUIZ */
+.quiz-option{background:var(--bg2);border:2px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer;font-size:15px;transition:all .2s;text-align:left;width:100%}
+.quiz-option.correct{border-color:var(--green);background:#ecfdf5}
+.quiz-option.wrong{border-color:var(--red);background:#fef2f2}
+[data-dark] .quiz-option.correct{background:#064e3b22}
+[data-dark] .quiz-option.wrong{background:#450a0a22}
+.progress-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-bottom:20px}
+.progress-fill{height:100%;background:var(--green);border-radius:3px;transition:width .3s}
+
+/* CALC */
+.tab-bar{display:flex;background:var(--bg3);border-radius:12px;padding:3px;margin-bottom:16px;gap:2px}
+.tab{flex:1;border:none;background:none;padding:8px 4px;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;color:var(--text2)}
+.tab.active{background:var(--bg2);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.input-group{margin-bottom:14px}
+.input-label{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:6px;display:block}
+.input-field{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-size:16px;color:var(--text);outline:none}
+.result-box{background:var(--bg3);border-radius:14px;padding:16px;margin-top:12px;text-align:center}
+.result-num{font-size:32px;font-weight:700;color:var(--green)}
+.result-label{font-size:13px;color:var(--text2);margin-top:4px}
+
+/* SVG CHART */
+.chart-wrap{margin-top:12px;overflow:hidden;border-radius:12px}
+
+/* INVESTMENT TILES */
+.inv-tile{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
+.inv-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.inv-icon{font-size:24px}
+.inv-name{font-size:15px;font-weight:700;color:var(--text)}
+.inv-recommended{font-size:11px;color:var(--green);font-weight:600}
+.inv-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+.inv-key{color:var(--text2)}
+.inv-val{font-weight:600;color:var(--text)}
+
+/* SECTION TITLE */
+.section-title{font-size:18px;font-weight:700;color:var(--text);margin:16px 0 10px}
+.section-sub{font-size:13px;color:var(--text2);margin-bottom:14px}
+
+/* MODULE CARDS */
+.module-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;cursor:pointer}
+.module-card:active{background:var(--bg3)}
+.module-icon{font-size:32px;margin-bottom:8px}
+.module-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px}
+.module-desc{font-size:13px;color:var(--text2)}
+
+/* DAY TERM */
+.day-term{background:linear-gradient(135deg,#10b981,#3b82f6);border-radius:16px;padding:20px;color:#fff;margin-bottom:16px;cursor:pointer}
+.day-term-label{font-size:12px;opacity:.8;margin-bottom:4px}
+.day-term-name{font-size:22px;font-weight:700;margin-bottom:6px}
+.day-term-short{font-size:14px;opacity:.9}
+
+/* FOOTER */
+.footer-note{text-align:center;font-size:11px;color:var(--text2);padding:16px;margin-top:8px}
+
+/* SEARCH RESULTS */
+.search-results{margin-top:12px}
+
+/* EMPTY */
+.empty{text-align:center;padding:40px 20px;color:var(--text2)}
+.empty-icon{font-size:48px;margin-bottom:12px}
+
+/* SELECT */
+select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-size:15px;color:var(--text);outline:none;appearance:none}
+
+/* TABLE */
+.compare-table{width:100%;border-collapse:collapse;font-size:13px}
+.compare-table th{background:var(--bg3);padding:10px;text-align:left;font-weight:700;color:var(--text)}
+.compare-table td{padding:10px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
+.compare-table tr:last-child td{border-bottom:none}
+
+/* TRANSITIONS */
+#app > *{animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div class="header" id="header">
+  <button class="icon-btn" id="backBtn" style="display:none" data-action="back">←</button>
+  <div class="header-title" id="headerTitle">📈 Börsen-Lexikon</div>
+  <button class="icon-btn" id="darkBtn" data-action="toggleDark">🌙</button>
+</div>
+
+<div id="app"></div>
+
+<nav class="nav">
+  <button class="nav-btn active" data-action="nav" data-id="home"><span class="nav-icon">🏠</span>Home</button>
+  <button class="nav-btn" data-action="nav" data-id="search"><span class="nav-icon">🔍</span>Suche</button>
+  <button class="nav-btn" data-action="nav" data-id="favorites"><span class="nav-icon">⭐</span>Favoriten</button>
+  <button class="nav-btn" data-action="nav" data-id="quiz"><span class="nav-icon">🧠</span>Quiz</button>
+  <button class="nav-btn" data-action="nav" data-id="calc"><span class="nav-icon">🧮</span>Rechner</button>
+</nav>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const CATEGORIES = [
+  {id:'etf-basics',name:'ETF Basics',icon:'🌍',color:'#10b981'},
+  {id:'aktien-basics',name:'Aktien Basics',icon:'📈',color:'#3b82f6'},
+  {id:'analysten',name:'Analysten & Ratings',icon:'🔍',color:'#8b5cf6'},
+  {id:'marktphasen',name:'Marktphasen',icon:'📊',color:'#f59e0b'},
+  {id:'kennzahlen',name:'Kennzahlen',icon:'📐',color:'#06b6d4'},
+  {id:'steuern',name:'Steuern DE',icon:'🏛️',color:'#ef4444'},
+  {id:'trading',name:'Trading & Risiko',icon:'⚠️',color:'#f97316'},
+  {id:'psychologie',name:'Psychologie',icon:'🧠',color:'#ec4899'},
+  {id:'broker-kosten',name:'Broker & Kosten',icon:'💸',color:'#64748b'},
+  {id:'langfristig',name:'Langfristig',icon:'🌱',color:'#22c55e'},
+];
+
+const TERMS = [
+// ETF BASICS
+{id:'etf',name:'ETF',category:'etf-basics',icon:'🌍',difficulty:1,
+ shortExplanation:'Ein ETF (Exchange Traded Fund) ist ein Fonds, der einen Index wie den MSCI World automatisch nachbildet. Du kaufst quasi einen kleinen Anteil von hunderten Unternehmen auf einmal.',
+ example:'Du kaufst einen MSCI World ETF für 100€ und bist damit sofort an über 1.600 Unternehmen aus 23 Ländern beteiligt.',
+ whyImportant:'ETFs sind das wichtigste Werkzeug für Privatanleger: günstig, diversifiziert, transparent.',
+ beginnerMistake:'Viele denken, ein ETF sei riskant wie eine Einzelaktie. In Wirklichkeit verteilt er das Risiko auf viele Unternehmen.',
+ memSatz:'ETF = Korb voller Aktien, den du günstig kaufen kannst.',
+ riskNote:null,
+ relatedTerms:['msci-world','ter','sparplan','diversifikation'],
+ quiz:{q:'Was ist ein ETF?',options:['Eine einzelne Aktie','Ein Fonds der einen Index nachbildet','Ein Sparkonto mit Zinsen','Eine Versicherung'],correct:1}},
+
+{id:'msci-world',name:'MSCI World',category:'etf-basics',icon:'🌐',difficulty:1,
+ shortExplanation:'Der MSCI World ist ein Index, der die 1.600 größten Unternehmen aus 23 Industrieländern enthält. Er gilt als Standard-Benchmark für globale Aktienanleger.',
+ example:'Apple, Microsoft, LVMH, Toyota — all das steckt im MSCI World. Ein ETF darauf kostet oft nur 0,12% TER pro Jahr.',
+ whyImportant:'Er ist der meistgenutzte Index für langfristige ETF-Sparpläne — historisch ca. 7-9% Rendite pro Jahr.',
+ beginnerMistake:'70% USA-Anteil macht ihn nicht so "weltweit" wie der Name klingt. Wer breiter streuen will, nimmt den FTSE All-World.',
+ memSatz:'MSCI World = die 1.600 wichtigsten Firmen der Welt in einem Index.',
+ riskNote:'Hoher US-Anteil (~70%) ist ein Klumpenrisiko.',
+ relatedTerms:['etf','ftse-all-world','sp500'],
+ quiz:{q:'Wie viele Länder enthält der MSCI World?',options:['10','23','50','189'],correct:1}},
+
+{id:'sp500',name:'S&P 500',category:'etf-basics',icon:'🇺🇸',difficulty:1,
+ shortExplanation:'Der S&P 500 enthält die 500 größten US-Unternehmen. Er ist der wichtigste Aktienindex der Welt und Maßstab für die US-Wirtschaft.',
+ example:'Apple, Amazon, Nvidia, Tesla — die 500 größten US-Konzerne. Ein ETF darauf kostet oft nur 0,07% TER.',
+ whyImportant:'Historisch ca. 10% Rendite pro Jahr — einer der besten langfristigen Indizes.',
+ beginnerMistake:'Nur USA — wer weltweit investieren will, sollte den MSCI World oder FTSE All-World wählen.',
+ memSatz:'S&P 500 = die 500 mächtigsten US-Unternehmen.',
+ riskNote:'100% USA-Risiko.',
+ relatedTerms:['msci-world','etf','ftse-all-world'],
+ quiz:{q:'Wie viele Unternehmen enthält der S&P 500?',options:['100','300','500','1000'],correct:2}},
+
+{id:'ter',name:'TER (Kosten)',category:'etf-basics',icon:'💸',difficulty:2,
+ shortExplanation:'Die Total Expense Ratio (TER) ist die jährliche Gesamtkostenquote eines ETFs — in Prozent vom investierten Kapital.',
+ example:'ETF mit TER 0,2% kostet bei 10.000€ nur 20€ pro Jahr. Aktiver Fonds mit 1,5% TER kostet 150€.',
+ whyImportant:'Kosten fressen Rendite. Über 30 Jahre macht der Unterschied von 0,2% vs 1,5% TER Zehntausende Euro aus.',
+ beginnerMistake:'Viele ignorieren die TER und kaufen teure Fonds. Billiger ist langfristig fast immer besser.',
+ memSatz:'TER = was der ETF dich jedes Jahr kostet. Je niedriger, desto besser.',
+ riskNote:null,
+ relatedTerms:['etf','tracking-difference','ausgabeaufschlag'],
+ quiz:{q:'Was bedeutet eine niedrige TER?',options:['Höheres Risiko','Geringere Kosten','Bessere Performance','Mehr Dividenden'],correct:1}},
+
+{id:'thesaurierend',name:'Thesaurierend',category:'etf-basics',icon:'🔄',difficulty:2,
+ shortExplanation:'Thesaurierende ETFs reinvestieren Dividenden automatisch. Das Geld bleibt im Fonds und wächst durch den Zinseszins-Effekt.',
+ example:'Dein ETF kassiert 2% Dividenden — statt sie dir auszuzahlen, kauft er automatisch mehr Anteile.',
+ whyImportant:'Ideal für Langfristanleger: kein Aufwand, maximaler Zinseszins-Effekt.',
+ beginnerMistake:'In Deutschland fällt jährlich die Vorabpauschale an — auch ohne Ausschüttung.',
+ memSatz:'Thesaurierend = Dividenden werden automatisch reinvestiert.',
+ riskNote:null,
+ relatedTerms:['ausschuettend','vorabpauschale','sparplan'],
+ quiz:{q:'Was passiert bei thesaurierenden ETFs mit Dividenden?',options:['Werden ausgezahlt','Werden reinvestiert','Werden einbehalten','Entfallen'],correct:1}},
+
+{id:'ausschuettend',name:'Ausschüttend',category:'etf-basics',icon:'💰',difficulty:2,
+ shortExplanation:'Ausschüttende ETFs zahlen Dividenden regelmäßig an dich aus — meist quartalsweise oder jährlich.',
+ example:'Du hast 10.000€ im ETF, der 2% ausschüttet. Du bekommst 200€ aufs Konto — wie ein kleines passives Einkommen.',
+ whyImportant:'Gut wenn du regelmäßige Einnahmen willst oder den Freibetrag (1.000€) optimal nutzen möchtest.',
+ beginnerMistake:'Ausschüttungen müssen versteuert werden — thesaurierende ETFs sind steuereffizienter für Langfristanleger.',
+ memSatz:'Ausschüttend = Dividenden kommen auf dein Konto.',
+ riskNote:null,
+ relatedTerms:['thesaurierend','abgeltungssteuer','sparerpauschbetrag'],
+ quiz:{q:'Was macht ein ausschüttender ETF mit Dividenden?',options:['Reinvestiert sie','Zahlt sie aus','Löscht sie','Versteuert sie automatisch'],correct:1}},
+
+{id:'diversifikation',name:'Diversifikation',category:'etf-basics',icon:'🎯',difficulty:1,
+ shortExplanation:'Diversifikation bedeutet, das Risiko auf viele verschiedene Anlagen zu verteilen — "Nicht alle Eier in einen Korb."',
+ example:'Statt alles in Tesla zu stecken, kaufst du einen ETF mit 1.600 Unternehmen. Geht Tesla pleite, verlierst du kaum was.',
+ whyImportant:'Die einzige kostenlose Risikoreduzierung an der Börse.',
+ beginnerMistake:'10 Tech-ETFs sind KEINE Diversifikation — alle bewegen sich gleich.',
+ memSatz:'Diversifikation = Risiko verteilen = ruhiger schlafen.',
+ riskNote:null,
+ relatedTerms:['etf','msci-world','ftse-all-world'],
+ quiz:{q:'Was ist Diversifikation?',options:['Alles in eine Aktie','Risiko auf viele Anlagen verteilen','Häufig kaufen und verkaufen','Den Markt timen'],correct:1}},
+
+{id:'sparplan',name:'Sparplan',category:'etf-basics',icon:'📅',difficulty:1,
+ shortExplanation:'Ein Sparplan investiert automatisch jeden Monat einen festen Betrag in ETFs — egal ob Markt hoch oder tief.',
+ example:'25€/Monat in MSCI World ETF. Nach 30 Jahren bei 7% Rendite: ~30.000€ aus nur 9.000€ Einzahlungen.',
+ whyImportant:'Spart Zeit, nutzt den Cost-Average-Effekt und macht Investieren zur Gewohnheit.',
+ beginnerMistake:'Zu lange warten bis "der richtige Zeitpunkt" kommt. Den gibt es nicht.',
+ memSatz:'Sparplan = Autopilot fürs Investieren.',
+ riskNote:null,
+ relatedTerms:['cost-average','etf','zinseszins'],
+ quiz:{q:'Was ist der Vorteil eines ETF-Sparplans?',options:['Garantierte Gewinne','Automatisches regelmäßiges Investieren','Keine Steuern','Tägliche Auszahlungen'],correct:1}},
+
+{id:'ftse-all-world',name:'FTSE All-World',category:'etf-basics',icon:'🌏',difficulty:2,
+ shortExplanation:'Der FTSE All-World enthält ~4.000 Unternehmen aus Industrie- UND Schwellenländern weltweit — breiter als der MSCI World.',
+ example:'Vanguard FTSE All-World ETF enthält Firmen aus über 49 Ländern — inklusive China, Indien, Brasilien.',
+ whyImportant:'Noch breiter diversifiziert als MSCI World. Viele empfehlen ihn als "Ein-ETF-Lösung".',
+ beginnerMistake:'Mehr Länder = nicht automatisch mehr Rendite, aber weniger Klumpenrisiko.',
+ memSatz:'FTSE All-World = wirklich die ganze Welt in einem ETF.',
+ riskNote:null,
+ relatedTerms:['msci-world','etf','diversifikation'],
+ quiz:{q:'Was unterscheidet den FTSE All-World vom MSCI World?',options:['Niedrigere Kosten','Nur US-Aktien','Enthält auch Schwellenländer','Weniger Unternehmen'],correct:2}},
+
+{id:'rebalancing',name:'Rebalancing',category:'etf-basics',icon:'⚖️',difficulty:3,
+ shortExplanation:'Rebalancing bedeutet, das Portfolio regelmäßig wieder auf die ursprüngliche Gewichtung zu bringen.',
+ example:'Du willst 80% ETF, 20% Anleihen. Aktien steigen stark: jetzt 90/10. Du verkaufst etwas Aktien und kaufst Anleihen.',
+ whyImportant:'Verhindert, dass eine Position durch Kurssteigerungen zu groß und riskant wird.',
+ beginnerMistake:'Zu häufiges Rebalancing kostet Gebühren und Steuern. 1x pro Jahr reicht.',
+ memSatz:'Rebalancing = Portfolio wieder ins Gleichgewicht bringen.',
+ riskNote:null,
+ relatedTerms:['diversifikation','etf','risikomanagement'],
+ quiz:{q:'Was bedeutet Rebalancing?',options:['Neue ETFs kaufen','Portfolio auf ursprüngliche Gewichtung zurücksetzen','Verluste ausgleichen','Den Broker wechseln'],correct:1}},
+
+// AKTIEN BASICS
+{id:'aktie',name:'Aktie',category:'aktien-basics',icon:'📈',difficulty:1,
+ shortExplanation:'Eine Aktie ist ein kleiner Anteil an einem Unternehmen. Kaufst du eine Apple-Aktie, bist du Miteigentümer von Apple.',
+ example:'Apple hat ~15 Milliarden Aktien. Kaufst du eine, gehört dir 1/15.000.000.000 von Apple.',
+ whyImportant:'Aktien ermöglichen es Privatpersonen, am Wachstum von Unternehmen zu partizipieren.',
+ beginnerMistake:'Einzelaktien sind riskant — geht das Unternehmen pleite, ist dein Geld weg. ETFs sind für Anfänger besser.',
+ memSatz:'Aktie = kleines Stück eines Unternehmens.',
+ riskNote:'Totalverlust möglich bei Insolvenz des Unternehmens.',
+ relatedTerms:['etf','depot','dividende','broker'],
+ quiz:{q:'Was ist eine Aktie?',options:['Ein Kredit an ein Unternehmen','Ein Anteil an einem Unternehmen','Ein Sparkonto','Eine Versicherung'],correct:1}},
+
+{id:'depot',name:'Depot',category:'aktien-basics',icon:'🏦',difficulty:1,
+ shortExplanation:'Ein Depot ist dein Konto für Wertpapiere — hier werden deine Aktien, ETFs und Anleihen verwahrt.',
+ example:'Du eröffnest ein Depot bei Trade Republic oder ING. Dort kannst du dann ETFs kaufen und verkaufen.',
+ whyImportant:'Ohne Depot kein Investieren. Es ist der Grundstein.',
+ beginnerMistake:'Zu lange mit der Depoteröffnung warten — das dauert meist 10 Minuten online.',
+ memSatz:'Depot = Konto für Wertpapiere.',
+ riskNote:null,
+ relatedTerms:['broker','aktie','etf'],
+ quiz:{q:'Was ist ein Depot?',options:['Ein Sparkonto','Ein Konto für Wertpapiere','Eine Kreditkarte','Ein Investmentfonds'],correct:1}},
+
+{id:'dividende',name:'Dividende',category:'aktien-basics',icon:'💵',difficulty:1,
+ shortExplanation:'Eine Dividende ist eine Gewinnausschüttung, die Unternehmen an ihre Aktionäre zahlen — meist jährlich oder quartalsweise.',
+ example:'Du hast 100 Coca-Cola Aktien à 60€. Dividende: 1,80€ je Aktie → du bekommst 180€ aufs Konto.',
+ whyImportant:'Passives Einkommen ohne Verkauf der Aktien.',
+ beginnerMistake:'Hohe Dividenden bedeuten nicht immer ein gutes Investment — manchmal ist die Aktie einfach gefallen.',
+ memSatz:'Dividende = Gewinnbeteiligung als Aktionär.',
+ riskNote:null,
+ relatedTerms:['aktie','ausschuettend','dividendenrendite'],
+ quiz:{q:'Was ist eine Dividende?',options:['Ein Kredit','Gewinnausschüttung an Aktionäre','Verkaufspreis','Kursgewinn'],correct:1}},
+
+{id:'broker',name:'Broker',category:'aktien-basics',icon:'💻',difficulty:1,
+ shortExplanation:'Ein Broker ist die Plattform/Bank, über die du Aktien und ETFs kaufst und verkaufst.',
+ example:'Trade Republic, ING, Comdirect, Scalable Capital — das sind typische Broker in Deutschland.',
+ whyImportant:'Der Broker bestimmt Kosten, Benutzerfreundlichkeit und verfügbare Produkte.',
+ beginnerMistake:'Ältere Filialbanken haben oft hohe Ordergebühren. Neo-Broker sind meist günstiger.',
+ memSatz:'Broker = Mittelsmann zwischen dir und der Börse.',
+ riskNote:null,
+ relatedTerms:['depot','ordergebuehr','spread'],
+ quiz:{q:'Was ist ein Broker?',options:['Ein Aktienindex','Plattform zum Kaufen/Verkaufen von Wertpapieren','Ein Fonds','Eine Versicherung'],correct:1}},
+
+{id:'spread',name:'Spread',category:'aktien-basics',icon:'↔️',difficulty:2,
+ shortExplanation:'Der Spread ist die Differenz zwischen Kauf- (Ask) und Verkaufspreis (Bid) eines Wertpapiers — versteckte Kosten beim Handeln.',
+ example:'ETF Kaufpreis: 100,10€. Verkaufspreis: 99,90€. Spread: 0,20€ — den "verlierst" du beim Kauf.',
+ whyImportant:'Beim Langfristinvestieren spielt der Spread kaum eine Rolle. Bei häufigem Handeln schmerzt er.',
+ beginnerMistake:'Bei illiquiden Aktien kann der Spread sehr groß sein — immer Limit-Order nutzen.',
+ memSatz:'Spread = Spanne zwischen Kauf- und Verkaufspreis.',
+ riskNote:null,
+ relatedTerms:['limit-order','market-order','ordergebuehr'],
+ quiz:{q:'Was ist der Spread?',options:['Jahresrendite','Differenz zwischen Kauf- und Verkaufspreis','Jahresgebühr','Dividendenrendite'],correct:1}},
+
+{id:'limit-order',name:'Limit-Order',category:'aktien-basics',icon:'🎯',difficulty:2,
+ shortExplanation:'Eine Limit-Order wird nur ausgeführt, wenn der Kurs deinen gewünschten Preis erreicht oder unterschreitet.',
+ example:'Aktie kostet 105€. Du setzt Limit bei 100€. Die Order wird nur ausgeführt, wenn der Kurs auf 100€ fällt.',
+ whyImportant:'Schützt vor schlechten Preisen — besonders bei schwankenden Märkten.',
+ beginnerMistake:'Market-Order bei kleinen Unternehmen oder ETFs auf XETRA zu Nebenzeiten nutzen — das kostet mehr.',
+ memSatz:'Limit-Order = ich kaufe nur zum Wunschpreis oder besser.',
+ riskNote:null,
+ relatedTerms:['market-order','spread','stop-loss'],
+ quiz:{q:'Was ist eine Limit-Order?',options:['Sofortige Kauforder','Order mit Maximalpreis','Dauerauftrag','Verkaufsorder'],correct:1}},
+
+{id:'market-order',name:'Market-Order',category:'aktien-basics',icon:'⚡',difficulty:2,
+ shortExplanation:'Eine Market-Order wird sofort zum aktuellen Marktpreis ausgeführt — egal was der Kurs gerade ist.',
+ example:'Du willst SOFORT kaufen. Market-Order wird zum nächstbesten Preis ausgeführt — manchmal teurer als erwartet.',
+ whyImportant:'Schnell und einfach, aber keine Preiskontrolle.',
+ beginnerMistake:'Bei illiquiden Wertpapieren oder außerhalb der Handelszeiten kann die Market-Order zu schlechten Preisen ausgeführt werden.',
+ memSatz:'Market-Order = sofort kaufen, egal zu welchem Preis.',
+ riskNote:'Kann bei illiquiden Wertpapieren sehr teuer werden.',
+ relatedTerms:['limit-order','spread','broker'],
+ quiz:{q:'Wann wird eine Market-Order ausgeführt?',options:['Beim Wunschpreis','Sofort zum Marktpreis','Nächsten Tag','Nach Bestätigung'],correct:1}},
+
+// ANALYSTEN
+{id:'buy',name:'Buy (Kaufen)',category:'analysten',icon:'🟢',difficulty:1,
+ shortExplanation:'„Buy" ist die Kaufempfehlung eines Analysten — er glaubt, die Aktie wird steigen.',
+ example:'Goldman Sachs setzt Apple auf „Buy" mit Kursziel 250$. Aktueller Kurs: 200$. Das impliziert 25% Potenzial.',
+ whyImportant:'Analystenratings bewegen Aktienkurse kurzfristig stark.',
+ beginnerMistake:'Analysten liegen oft falsch und haben Interessenskonflikte. Blindes Folgen ist gefährlich.',
+ memSatz:'Buy = Analyst empfiehlt die Aktie zu kaufen.',
+ riskNote:'Analysten haben oft Interessenskonflikte mit den bewerteten Unternehmen.',
+ relatedTerms:['sell','hold','kursziel','upgrade'],
+ quiz:{q:'Was bedeutet eine "Buy"-Empfehlung?',options:['Aktie verkaufen','Aktie kaufen empfohlen','Kurs bleibt gleich','Analyst ist neutral'],correct:1}},
+
+{id:'sell',name:'Sell (Verkaufen)',category:'analysten',icon:'🔴',difficulty:1,
+ shortExplanation:'„Sell" bedeutet, der Analyst empfiehlt die Aktie zu verkaufen — er erwartet fallende Kurse.',
+ example:'JP Morgan stuft Tesla auf „Sell" mit Kursziel 100$ herunter (aktuell: 200$). Aktie fällt nach der Meldung.',
+ whyImportant:'Sell-Ratings sind selten — daher haben sie oft starke Wirkung auf den Kurs.',
+ beginnerMistake:'Nur weil ein Analyst „Sell" sagt, muss man nicht sofort verkaufen — langfristig irrelevant.',
+ memSatz:'Sell = Analyst erwartet fallende Kurse.',
+ riskNote:null,
+ relatedTerms:['buy','hold','downgrade'],
+ quiz:{q:'Was empfiehlt ein Analyst bei einem "Sell"-Rating?',options:['Kaufen','Halten','Verkaufen','Nichts tun'],correct:2}},
+
+{id:'hold',name:'Hold (Halten)',category:'analysten',icon:'🟡',difficulty:1,
+ shortExplanation:'„Hold" bedeutet, der Analyst empfiehlt die Aktie weder zu kaufen noch zu verkaufen — er sieht kaum Potenzial nach oben oder unten.',
+ example:'Analyst: „Hold" bei Volkswagen. Kein großer Anstieg erwartet, aber auch kein Crash.',
+ whyImportant:'Hold ist oft eine verklausulierte Downgrade — viele Analysten scheuen sich, „Sell" zu sagen.',
+ beginnerMistake:'„Hold" klingt neutral, wird aber oft als schlechtes Zeichen interpretiert.',
+ memSatz:'Hold = weder kaufen noch verkaufen — neutral.',
+ riskNote:null,
+ relatedTerms:['buy','sell','kursziel'],
+ quiz:{q:'Was bedeutet „Hold"?',options:['Sofort kaufen','Sofort verkaufen','Weder kaufen noch verkaufen','Kursziel erreicht'],correct:2}},
+
+{id:'kursziel',name:'Kursziel',category:'analysten',icon:'🎯',difficulty:2,
+ shortExplanation:'Das Kursziel ist der Preis, den ein Analyst für eine Aktie in 12 Monaten erwartet.',
+ example:'Analyst setzt Kursziel von 300$ bei Apple (aktuell: 200$) → erwartet 50% Anstieg.',
+ whyImportant:'Gibt einen Anhaltspunkt, wie viel Potenzial der Analyst sieht.',
+ beginnerMistake:'Kursziele werden sehr oft verfehlt — sie sind Schätzungen, keine Garantien.',
+ memSatz:'Kursziel = erwarteter Preis in 12 Monaten laut Analyst.',
+ riskNote:null,
+ relatedTerms:['buy','sell','hold'],
+ quiz:{q:'Was ist ein Kursziel?',options:['Garantierter Kurs','Erwarteter Kurs in 12 Monaten','Aktueller Kurs','Historischer Höchstpreis'],correct:1}},
+
+// MARKTPHASEN
+{id:'bull-market',name:'Bullenmarkt',category:'marktphasen',icon:'🐂',difficulty:1,
+ shortExplanation:'Ein Bullenmarkt ist eine Phase steigender Aktienkurse — Optimismus, Wachstum, gute Stimmung.',
+ example:'2009–2020: Einer der längsten Bullenmärkte der Geschichte. Wer dabei war, hat sein Geld vervielfacht.',
+ whyImportant:'Im Bullenmarkt wächst dein Portfolio — wichtig, investiert zu bleiben.',
+ beginnerMistake:'Im Bullenmarkt überschätzen viele ihre Risikobereitschaft.',
+ memSatz:'Bulle = Markt geht hoch (Bulle stößt nach oben).',
+ riskNote:null,
+ relatedTerms:['bear-market','rally','allzeithoch'],
+ quiz:{q:'Was ist ein Bullenmarkt?',options:['Fallende Kurse','Seitwärtsbewegung','Steigende Kurse','Hohe Volatilität'],correct:2}},
+
+{id:'bear-market',name:'Bärenmarkt',category:'marktphasen',icon:'🐻',difficulty:1,
+ shortExplanation:'Ein Bärenmarkt liegt vor, wenn ein Index 20% oder mehr von seinem Hoch gefallen ist.',
+ example:'2022: S&P 500 fiel um ~25%. Viele Anleger verkauften in Panik — und verpassten die Erholung 2023.',
+ whyImportant:'Im Bärenmarkt günstig einkaufen und nicht in Panik verkaufen.',
+ beginnerMistake:'Im Bärenmarkt verkaufen und Verluste realisieren — genau das Falsche.',
+ memSatz:'Bär = Markt geht runter (Bär schlägt nach unten).',
+ riskNote:null,
+ relatedTerms:['bull-market','crash','panik'],
+ quiz:{q:'Wann spricht man von einem Bärenmarkt?',options:['Kurs steigt 20%','Kurs fällt 20% vom Hoch','Volatilität steigt','Volumen sinkt'],correct:1}},
+
+{id:'crash',name:'Crash',category:'marktphasen',icon:'💥',difficulty:1,
+ shortExplanation:'Ein Crash ist ein sehr schneller, starker Kurseinbruch — oft 10-20% in wenigen Tagen.',
+ example:'März 2020 (Corona): S&P 500 fiel in 33 Tagen um 34%. Wer hielt, erholte sich bis Jahresende.',
+ whyImportant:'Crashes gehören zur Börse dazu — wer langfristig investiert, muss sie aushalten können.',
+ beginnerMistake:'Im Crash verkaufen = Verluste festschreiben + Erholung verpassen.',
+ memSatz:'Crash = schneller heftiger Einbruch. Aushalten lohnt sich.',
+ riskNote:'Kurzfristig schmerzhaft, langfristig normal.',
+ relatedTerms:['bear-market','volatilitaet','panik'],
+ quiz:{q:'Was sollte man im Crash tun?',options:['Alles verkaufen','Nachkaufen und aushalten','Broker wechseln','Nichts investieren'],correct:1}},
+
+{id:'volatilitaet',name:'Volatilität',category:'marktphasen',icon:'📉',difficulty:2,
+ shortExplanation:'Volatilität beschreibt, wie stark ein Kurs schwankt. Hohe Volatilität = starke Ausschläge nach oben und unten.',
+ example:'Bitcoin: Volatilität von 80%. MSCI World ETF: ~15%. Das Tagesgeldkonto: 0%.',
+ whyImportant:'Hohe Volatilität bedeutet hohes Risiko, aber auch höhere Renditechancen.',
+ beginnerMistake:'Kurzfristig Angst vor Volatilität. Langfristig ist sie dein Freund — du kaufst in Dips günstiger.',
+ memSatz:'Volatilität = Schwankungsbreite. Hoch = aufregend aber riskant.',
+ riskNote:null,
+ relatedTerms:['risikomanagement','crash','beta'],
+ quiz:{q:'Was misst die Volatilität?',options:['Jahresrendite','Kursschwankungen','Dividendenhöhe','Unternehmensgröße'],correct:1}},
+
+{id:'allzeithoch',name:'Allzeithoch (ATH)',category:'marktphasen',icon:'🏔️',difficulty:1,
+ shortExplanation:'Das Allzeithoch (All-Time High, ATH) ist der höchste Kurs, den ein Wertpapier je erreicht hat.',
+ example:'Der S&P 500 hat historisch immer wieder neue ATHs gebrochen — langfristig zeigt der Trend nach oben.',
+ whyImportant:'Viele haben Angst, "auf dem Höchststand" zu kaufen. Studien zeigen: ATH kaufen ist trotzdem rentabel.',
+ beginnerMistake:'Angst vor dem ATH = verpasse jahrelange Rendite. Neue Hochs werden immer wieder überschritten.',
+ memSatz:'ATH = höchster je dagewesener Kurs. Kein Grund zur Panik.',
+ riskNote:null,
+ relatedTerms:['bull-market','dip','pullback'],
+ quiz:{q:'Was ist ein Allzeithoch?',options:['Durchschnittskurs','Höchster jemals erreichter Kurs','Jahreskurs','Historischer Tiefkurs'],correct:1}},
+
+// KENNZAHLEN
+{id:'kgv',name:'KGV (Kurs-Gewinn-Verhältnis)',category:'kennzahlen',icon:'📐',difficulty:2,
+ shortExplanation:'Das KGV zeigt, wie teuer eine Aktie im Verhältnis zum Unternehmensgewinn ist. KGV 20 = du zahlst 20x den Jahresgewinn.',
+ example:'Apple Gewinn: 10$/Aktie. Kurs: 200$. KGV = 20. Historischer S&P 500 Schnitt: ~15-18.',
+ whyImportant:'Wichtigste Bewertungskennzahl — hilft zu beurteilen, ob eine Aktie teuer oder günstig ist.',
+ beginnerMistake:'Niedriges KGV ≠ automatisch günstig. Manchmal sind niedrige KGVs berechtigt (schlechte Perspektiven).',
+ memSatz:'KGV = wie viele Jahresgewinne ich für die Aktie zahle.',
+ riskNote:null,
+ relatedTerms:['eps','fair-value','market-cap'],
+ quiz:{q:'Was zeigt ein KGV von 20?',options:['20% Rendite','Kurs ist 20x der Jahresgewinn','Dividende von 20€','Marktgröße'],correct:1}},
+
+{id:'market-cap',name:'Marktkapitalisierung',category:'kennzahlen',icon:'🏢',difficulty:2,
+ shortExplanation:'Marktkapitalisierung = Aktienkurs × Anzahl Aktien. Sie zeigt den Gesamtwert eines Unternehmens an der Börse.',
+ example:'Apple: 3 Billionen Dollar Marktkapitalisierung. Das ist mehr als das gesamte BIP von Deutschland.',
+ whyImportant:'Bestimmt, ob eine Aktie Large-Cap, Mid-Cap oder Small-Cap ist — wichtig für ETF-Zusammensetzung.',
+ beginnerMistake:'Hohe Marktkapitalisierung ≠ gutes Investment. Aber sie zeigt die Größe und Stabilität.',
+ memSatz:'Marktkapitalisierung = Gesamtwert aller Aktien eines Unternehmens.',
+ riskNote:null,
+ relatedTerms:['kgv','aktie'],
+ quiz:{q:'Wie berechnet man die Marktkapitalisierung?',options:['Gewinn × Zeit','Kurs × Aktienanzahl','Umsatz × Marge','Dividende × Aktien'],correct:1}},
+
+{id:'dividendenrendite',name:'Dividendenrendite',category:'kennzahlen',icon:'📊',difficulty:2,
+ shortExplanation:'Dividendenrendite = jährliche Dividende / Aktienkurs × 100. Sie zeigt, wie viel Prozent du jährlich als Dividende bekommst.',
+ example:'Aktie kostet 100€. Dividende: 3€. Dividendenrendite = 3%. Wie ein Zinssatz für Aktien.',
+ whyImportant:'Wichtig für Einkommensinvestoren, die von Dividenden leben wollen.',
+ beginnerMistake:'8% Dividendenrendite klingt toll — kann aber bedeuten, die Aktie ist stark gefallen (Warnsignal).',
+ memSatz:'Dividendenrendite = Dividende in % des Aktienkurses.',
+ riskNote:null,
+ relatedTerms:['dividende','ausschuettend','kgv'],
+ quiz:{q:'Wie berechnet sich die Dividendenrendite?',options:['Kurs / Gewinn','Dividende / Kurs × 100','Umsatz / Aktien','Gewinn / Kosten'],correct:1}},
+
+// STEUERN
+{id:'abgeltungssteuer',name:'Abgeltungssteuer',category:'steuern',icon:'🏛️',difficulty:2,
+ shortExplanation:'In Deutschland werden Kapitalerträge (Gewinne, Dividenden) mit 25% + Soli (0,55%) + ggf. Kirchensteuer besteuert.',
+ example:'Du verkaufst ETF-Anteile mit 1.000€ Gewinn. Nach Freibetrag: 25% + Soli = ca. 263€ Steuern.',
+ whyImportant:'Steuern fressen Rendite — den Freibetrag (1.000€) sollte man immer nutzen.',
+ beginnerMistake:'Freibetrag nicht beantragen → Bank versteuert alles automatisch.',
+ memSatz:'Abgeltungssteuer = 25% auf Kapitalerträge. Freibetrag: 1.000€/Jahr.',
+ riskNote:null,
+ relatedTerms:['sparerpauschbetrag','freistellungsauftrag','soli','teilfreistellung'],
+ quiz:{q:'Wie hoch ist die Abgeltungssteuer in Deutschland?',options:['15%','19%','25%','42%'],correct:2}},
+
+{id:'sparerpauschbetrag',name:'Sparerpauschbetrag',category:'steuern',icon:'🎁',difficulty:2,
+ shortExplanation:'Der Sparerpauschbetrag (1.000€/Jahr, 2.000€ für Ehepaare) ist der Freibetrag für Kapitalerträge — darunter zahlt man keine Steuern.',
+ example:'Du hast 800€ Dividenden + 200€ ETF-Gewinn = 1.000€. Alles steuerfrei dank Pauschbetrag.',
+ whyImportant:'Nutze ihn vollständig — es wäre verschenktes Geld.',
+ beginnerMistake:'Freistellungsauftrag vergessen zu stellen → Bank versteuert alles sofort.',
+ memSatz:'Sparerpauschbetrag = 1.000€ Kapitalerträge steuerfrei pro Jahr.',
+ riskNote:null,
+ relatedTerms:['abgeltungssteuer','freistellungsauftrag'],
+ quiz:{q:'Wie hoch ist der Sparerpauschbetrag für Einzelpersonen?',options:['500€','801€','1.000€','2.000€'],correct:2}},
+
+{id:'freistellungsauftrag',name:'Freistellungsauftrag',category:'steuern',icon:'📋',difficulty:2,
+ shortExplanation:'Der Freistellungsauftrag ist der Auftrag an deine Bank, bis zur Höhe des Sparerpauschbetrags keine Steuern abzuziehen.',
+ example:'Du stellst 1.000€ Freistellungsauftrag bei Trade Republic. Bis 1.000€ Erträge: keine automatischen Steuern.',
+ whyImportant:'Ohne ihn wird automatisch versteuert — und du musst das Geld über die Steuererklärung zurückholen.',
+ beginnerMistake:'Bei mehreren Brokern: Betrag aufteilen (z.B. 600€ + 400€) — aber nie mehr als 1.000€ gesamt.',
+ memSatz:'Freistellungsauftrag = Steuerfreibetrag beim Broker beantragen.',
+ riskNote:null,
+ relatedTerms:['sparerpauschbetrag','abgeltungssteuer'],
+ quiz:{q:'Was macht ein Freistellungsauftrag?',options:['Steuern senken','Bank von Steuerabzug bis Freibetrag befreien','Depot gebührenfrei machen','Gewinne verstecken'],correct:1}},
+
+{id:'vorabpauschale',name:'Vorabpauschale',category:'steuern',icon:'📆',difficulty:3,
+ shortExplanation:'Die Vorabpauschale ist eine jährliche Mindestbesteuerung für thesaurierende ETFs — auch wenn du nichts verkaufst.',
+ example:'Du hast 10.000€ im MSCI World thesaurierenden ETF. Am Jahresanfang wird automatisch ein kleiner Betrag besteuert.',
+ whyImportant:'Verhindert, dass Anleger ewig steuerfrei thesaurieren. Betrifft hauptsächlich thesaurierende ETFs.',
+ beginnerMistake:'Keine Liquidität auf dem Broker-Konto → Bank kann Steuer nicht abziehen → Probleme.',
+ memSatz:'Vorabpauschale = kleine jährliche Steuer auf thesaurierende ETFs.',
+ riskNote:null,
+ relatedTerms:['thesaurierend','abgeltungssteuer','freistellungsauftrag'],
+ quiz:{q:'Wen betrifft die Vorabpauschale hauptsächlich?',options:['Ausschüttende ETFs','Einzelaktien','Thesaurierende ETFs','Anleihen'],correct:2}},
+
+{id:'teilfreistellung',name:'Teilfreistellung',category:'steuern',icon:'🎯',difficulty:3,
+ shortExplanation:'Bei Aktien-ETFs sind 30% der Gewinne steuerfrei (Teilfreistellung). Du zahlst also nur auf 70% der Gewinne Abgeltungssteuer.',
+ example:'1.000€ ETF-Gewinn. 30% = 300€ steuerfrei. 700€ versteuert mit 25% = 175€ Steuer (statt 250€).',
+ whyImportant:'Macht ETFs noch steuerlich attraktiver gegenüber anderen Anlagen.',
+ beginnerMistake:'Gilt nur für Aktien-ETFs (mind. 51% Aktienquote), nicht für Anleihen-ETFs.',
+ memSatz:'Teilfreistellung = 30% der ETF-Gewinne steuerfrei.',
+ riskNote:null,
+ relatedTerms:['abgeltungssteuer','etf'],
+ quiz:{q:'Wie viel Prozent sind bei Aktien-ETFs steuerfrei (Teilfreistellung)?',options:['15%','25%','30%','50%'],correct:2}},
+
+// TRADING & RISIKO
+{id:'stop-loss',name:'Stop-Loss',category:'trading',icon:'🛑',difficulty:2,
+ shortExplanation:'Eine Stop-Loss-Order verkauft automatisch, wenn der Kurs unter einen bestimmten Preis fällt — begrenzt Verluste.',
+ example:'Du kaufst Aktie bei 100€. Stop-Loss bei 85€. Fällt die Aktie auf 85€, wird automatisch verkauft.',
+ whyImportant:'Schutz vor extremen Verlusten — wichtig beim Trading, weniger relevant bei ETF-Langfristinvest.',
+ beginnerMistake:'Stop-Loss zu eng setzen → normale Schwankungen lösen Verkauf aus.',
+ memSatz:'Stop-Loss = automatischer Notaus bei Kursverlust.',
+ riskNote:'Schützt nicht bei Gaps (Kurssprüngen über Nacht).',
+ relatedTerms:['risikomanagement','limit-order','trading'],
+ quiz:{q:'Was macht eine Stop-Loss-Order?',options:['Kauft bei Tiefststand','Verkauft automatisch unter einem Preis','Sperrt das Depot','Begrenzt Gewinne'],correct:1}},
+
+{id:'hebel',name:'Hebel (Leverage)',category:'trading',icon:'⚡',difficulty:3,
+ shortExplanation:'Ein Hebel multipliziert Gewinne UND Verluste. Hebel 5 = +10% Kurs → +50% Gewinn, aber -10% → -50% Verlust.',
+ example:'Du investierst 1.000€ mit Hebel 10. Kurs steigt 5% → +500€. Kurs fällt 10% → -1.000€ (Totalverlust).',
+ whyImportant:'Für Anfänger absolut ungeeignet. Profis nutzen es selten und vorsichtig.',
+ beginnerMistake:'Hebel als Abkürzung zum Reichtum sehen — sie ist eine Abkürzung zum Verlust.',
+ memSatz:'Hebel = Chancen UND Risiken multipliziert. Für Anfänger verboten.',
+ riskNote:'Totalverlust und sogar Schulden möglich.',
+ relatedTerms:['cfd','daytrading','risikomanagement'],
+ quiz:{q:'Was macht ein Hebel von 5 bei -10% Kursverlust?',options:['-2% Verlust','-10% Verlust','-50% Verlust','Kein Verlust'],correct:2}},
+
+{id:'cost-average',name:'Cost-Average-Effekt',category:'trading',icon:'📊',difficulty:2,
+ shortExplanation:'Durch regelmäßiges Investieren gleicher Beträge kaufst du bei hohen Kursen weniger Anteile und bei niedrigen Kursen mehr — glättet den Einstiegskurs.',
+ example:'Jeden Monat 100€: Bei 100€/Anteil = 1 Anteil. Bei 50€/Anteil = 2 Anteile. Durchschnittskurs: günstiger als Spitze.',
+ whyImportant:'Macht Market-Timing überflüssig — perfekt für Sparpläne.',
+ beginnerMistake:'Cost-Averaging ist nicht immer besser als Einmalinvest — aber es beruhigt die Nerven.',
+ memSatz:'Cost-Average = regelmäßig investieren glättet den Einstiegskurs.',
+ riskNote:null,
+ relatedTerms:['sparplan','markt-timing'],
+ quiz:{q:'Was beschreibt der Cost-Average-Effekt?',options:['Günstigste Aktie kaufen','Durch regelmäßige Beträge Einstiegskurs glätten','Kosten minimieren','Steuern sparen'],correct:1}},
+
+{id:'fomo',name:'FOMO',category:'trading',icon:'😰',difficulty:1,
+ shortExplanation:'FOMO (Fear Of Missing Out) = die Angst, eine Kurschance zu verpassen. Führt zu impulsiven, schlechten Entscheidungen.',
+ example:'Bitcoin steigt auf 60.000$. Du kaufst aus FOMO — kurz danach fällt er auf 30.000$.',
+ whyImportant:'FOMO ist einer der häufigsten Verlustgründe für Privatanleger.',
+ beginnerMistake:'FOMO-Käufe auf Hypes und Meme-Aktien — fast immer verlustreich.',
+ memSatz:'FOMO = Panik-Kauf aus Angst etwas zu verpassen. Fast immer falsch.',
+ riskNote:'Emotionale Entscheidungen kosten Rendite.',
+ relatedTerms:['psychologie','herdenverhalten','panik'],
+ quiz:{q:'Was bedeutet FOMO an der Börse?',options:['Eine Kaufstrategie','Angst etwas zu verpassen','Ein Index','Broker-Begriff'],correct:1}},
+
+// PSYCHOLOGIE
+{id:'buy-and-hold',name:'Buy and Hold',category:'psychologie',icon:'💎',difficulty:1,
+ shortExplanation:'Buy and Hold bedeutet kaufen und langfristig halten — keine aktiven Trades, nur Zeit arbeiten lassen.',
+ example:'Warren Buffett kauft Aktien und hält sie "forever". S&P 500 seit 1970: ~9.000% Rendite für Langfristhalter.',
+ whyImportant:'Statistisch schlägt Buy-and-Hold die meisten aktiven Strategien langfristig.',
+ beginnerMistake:'Bei Kurseinbrüchen nervös werden und verkaufen — das zerstört die Buy-and-Hold-Rendite.',
+ memSatz:'Buy and Hold = kaufen, halten, Zeit arbeiten lassen.',
+ riskNote:null,
+ relatedTerms:['sparplan','cost-average','markt-timing'],
+ quiz:{q:'Was ist die Kernidee von Buy and Hold?',options:['Täglich handeln','Kaufen und langfristig halten','Verluste sofort realisieren','Timing des Markts'],correct:1}},
+
+{id:'herdenverhalten',name:'Herdenverhalten',category:'psychologie',icon:'🐑',difficulty:2,
+ shortExplanation:'Herdenverhalten = dem Markt/anderen Anlegern blind folgen. "Alle kaufen, also kaufe ich auch."',
+ example:'GameStop 2021: Masse kauft aus FOMO auf Reddit-Hype. Kurs steigt 1.500%, dann Crash. Herdentiere verlieren.',
+ whyImportant:'Herdenverhalten erzeugt Blasen und Abstürze — Contrarian-Denken ist oft profitabler.',
+ beginnerMistake:'Aktien kaufen weil "alle" es tun — meistens zu spät.',
+ memSatz:'Herdenverhalten = alle machen dasselbe. Meistens falsch.',
+ riskNote:null,
+ relatedTerms:['fomo','panik','gier'],
+ quiz:{q:'Was ist Herdenverhalten?',options:['Diversifikation','Blindes Folgen der Masse','Risikostreuung','Langfristinvest'],correct:1}},
+
+// BROKER & KOSTEN
+{id:'ordergebuehr',name:'Ordergebühr',category:'broker-kosten',icon:'💸',difficulty:1,
+ shortExplanation:'Die Ordergebühr ist der Preis, den du beim Kauf oder Verkauf von Wertpapieren an den Broker zahlst.',
+ example:'Comdirect: 12,90€ + 0,25% pro Trade. Trade Republic: 1€ pro Trade. Neo-Broker sind viel günstiger.',
+ whyImportant:'Bei kleinen Beträgen können Gebühren den Gewinn auffressen. Neo-Broker haben das gelöst.',
+ beginnerMistake:'50€ investieren und 12€ Ordergebühr zahlen = 24% sofortige "Rendite" nötig zum Break-even.',
+ memSatz:'Ordergebühr = was du beim Kauf/Verkauf an den Broker zahlst.',
+ riskNote:null,
+ relatedTerms:['broker','spread','ter'],
+ quiz:{q:'Was ist eine Ordergebühr?',options:['Jährliche Depotgebühr','Kosten je Kauf/Verkauf','TER des ETFs','Spread-Kosten'],correct:1}},
+
+{id:'ausgabeaufschlag',name:'Ausgabeaufschlag',category:'broker-kosten',icon:'🚫',difficulty:2,
+ shortExplanation:'Der Ausgabeaufschlag ist eine einmalige Gebühr beim Kauf aktiver Fonds — oft 3-5% des Kaufbetrags.',
+ example:'Du kaufst aktiven Fonds für 10.000€ mit 5% Ausgabeaufschlag. Direkt 500€ weg. ETFs haben das NICHT.',
+ whyImportant:'Einer der Hauptgründe, warum ETFs aktiven Fonds langfristig schlagen.',
+ beginnerMistake:'Viele Bankberater verkaufen aktive Fonds mit Ausgabeaufschlag — das ist oft ihr Verdienst.',
+ memSatz:'Ausgabeaufschlag = versteckte Gebühr bei aktiven Fonds. ETFs haben das nicht.',
+ riskNote:null,
+ relatedTerms:['ter','ordergebuehr','etf'],
+ quiz:{q:'Was ist ein Ausgabeaufschlag?',options:['TER eines ETFs','Einmalige Kaufgebühr bei aktiven Fonds','Jahresgebühr','Dividendenzahlung'],correct:1}},
+
+// LANGFRISTIG
+{id:'zinseszins',name:'Zinseszins',category:'langfristig',icon:'🔢',difficulty:1,
+ shortExplanation:'Zinseszins = Zinsen auf Zinsen. Gewinne werden reinvestiert und erwirtschaften selbst Gewinne — exponentielles Wachstum.',
+ example:'1.000€ bei 7%/Jahr: nach 10 Jahren = 1.967€. Nach 30 Jahren = 7.612€. Nach 40 Jahren = 14.974€.',
+ whyImportant:'Der Zinseszins ist die mächtigste Kraft beim Vermögensaufbau — Zeit ist das wichtigste Element.',
+ beginnerMistake:'Zu spät anfangen. Jedes Jahr zählt enorm.',
+ memSatz:'Zinseszins = Zinsen auf Zinsen. Zeit ist Geld.',
+ riskNote:null,
+ relatedTerms:['sparplan','thesaurierend','buy-and-hold'],
+ quiz:{q:'Was ist der Zinseszins-Effekt?',options:['Festgeld-Zinsen','Zinsen auf bereits erhaltene Zinsen','Dividenden-Steuer','Inflation'],correct:1}},
+
+{id:'markt-timing',name:'Markt-Timing',category:'langfristig',icon:'⏰',difficulty:2,
+ shortExplanation:'Markt-Timing = versuchen, den besten Ein- und Ausstiegszeitpunkt zu finden. Wissenschaftlich erwiesen: gelingt langfristig kaum jemandem.',
+ example:'Studie: Wer die 10 besten Börsentage in 20 Jahren verpasst, halbiert seine Rendite. Diese Tage kommen nach Crashes.',
+ whyImportant:'Time in the market beats timing the market. Immer investiert sein ist besser als raten.',
+ beginnerMistake:'Auf den "richtigen" Zeitpunkt warten. Den gibt es nicht.',
+ memSatz:'Markt-Timing klappt nicht. Immer investiert sein schlägt Warten.',
+ riskNote:null,
+ relatedTerms:['buy-and-hold','cost-average','sparplan'],
+ quiz:{q:'Was zeigen Studien über Markt-Timing?',options:['Es klappt immer','Es klappt langfristig kaum','Profis können es','Ist legal verboten'],correct:1}},
+
+{id:'risikomanagement',name:'Risikomanagement',category:'langfristig',icon:'🛡️',difficulty:2,
+ shortExplanation:'Risikomanagement bedeutet, das Verlustrisiko bewusst zu steuern: Diversifikation, Positionsgrößen, Notgroschen.',
+ example:'Nur 80% in Aktien, 20% Notgroschen. Nie mehr als 5% in eine Einzelaktie. Stop-Loss setzen beim Trading.',
+ whyImportant:'Der wichtigste Schutz vor dem Ruin — nicht Gewinne maximieren, sondern Verluste begrenzen.',
+ beginnerMistake:'Alles auf eine Karte setzen. Kein Notgroschen haben.',
+ memSatz:'Risikomanagement = Verluste begrenzen, bevor Gewinne maximieren.',
+ riskNote:null,
+ relatedTerms:['diversifikation','stop-loss','volatilitaet'],
+ quiz:{q:'Was ist das Ziel von Risikomanagement?',options:['Gewinne maximieren','Verluste begrenzen','Broker wählen','Steuern sparen'],correct:1}},
+];
+
+// MODULES
+const MODULES = [
+  {id:'trade-republic',icon:'📱',title:'Was bedeutet das in Trade Republic?',desc:'13 Broker-Begriffe einfach erklärt — für Trade Republic Nutzer'},
+  {id:'etf-vs-aktie',icon:'⚔️',title:'ETF oder Einzelaktie?',desc:'Vergleich: Wann macht was Sinn?'},
+  {id:'steuer-erklaert',icon:'🧾',title:'Steuer einfach erklärt',desc:'Schritt-für-Schritt mit echten Beispielen'},
+  {id:'warnung-zocken',icon:'⚠️',title:'Warnung: Zocken an der Börse',desc:'Hebel, Meme-Aktien, FOMO — die Fallen'},
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  page: 'home',
+  prevPage: null,
+  termId: null,
+  categoryId: null,
+  moduleId: null,
+  searchQ: '',
+  quizQ: 0,
+  quizAnswered: false,
+  quizScore: 0,
+  quizDone: false,
+  quizQuestions: [],
+  calcTab: 0,
+  calcTabSteuern: 0,
+  dark: localStorage.getItem('dark') !== '0',
+  learnTerms: [],
+  learnIdx: 0,
+  learnCatId: null,
+};
+
+let favorites = JSON.parse(localStorage.getItem('favs') || '[]');
+let understood = JSON.parse(localStorage.getItem('understood') || '[]');
+let highscore = parseInt(localStorage.getItem('highscore') || '0');
+let userName = localStorage.getItem('userName') || '';
+
+function saveFavs() { localStorage.setItem('favs', JSON.stringify(favorites)); }
+function saveUserName(n) { userName = n; localStorage.setItem('userName', n); }
+function saveUnderstood() { localStorage.setItem('understood', JSON.stringify(understood)); }
+
+// ============================================================
+// HELPERS
+// ============================================================
+function getTermById(id) { return TERMS.find(t => t.id === id); }
+function getCatById(id) { return CATEGORIES.find(c => c.id === id); }
+function stars(n) { return '★'.repeat(n) + '☆'.repeat(3 - n); }
+function fmt(n) { return n.toLocaleString('de-DE', {maximumFractionDigits:0}) + ' €'; }
+function fmtN(n,d=2) { return n.toLocaleString('de-DE',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+
+function termsByCategory(catId) { return TERMS.filter(t => t.category === catId); }
+function termSearch(q) {
+  const lq = q.toLowerCase();
+  return TERMS.filter(t =>
+    t.name.toLowerCase().includes(lq) ||
+    t.shortExplanation.toLowerCase().includes(lq) ||
+    t.id.includes(lq)
+  );
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function render() {
+  const app = document.getElementById('app');
+  const backBtn = document.getElementById('backBtn');
+  const headerTitle = document.getElementById('headerTitle');
+  const darkBtn = document.getElementById('darkBtn');
+
+  // Dark mode
+  document.body.toggleAttribute('data-dark', state.dark);
+  darkBtn.textContent = state.dark ? '☀️' : '🌙';
+
+  // Nav
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.id === state.page);
+  });
+
+  // Back button
+  const showBack = ['term','category','module','learn-pick','learn','learn-done','disclaimer'].includes(state.page);
+  backBtn.style.display = showBack ? 'flex' : 'none';
+
+  // Header title
+  const titles = {
+    home: userName ? `📈 Investmentlexikon für ${userName}` : '📈 Investmentlexikon', search:'🔍 Suche', favorites:'⭐ Favoriten',
+    quiz:'🧠 Quiz', calc:'🧮 Rechner', term:'', category:'', module:'',
+  };
+  if (state.page === 'term' && state.termId) {
+    const t = getTermById(state.termId);
+    headerTitle.textContent = t ? t.icon + ' ' + t.name : '←';
+  } else if (state.page === 'category' && state.categoryId) {
+    const c = getCatById(state.categoryId);
+    headerTitle.textContent = c ? c.icon + ' ' + c.name : '←';
+  } else if (state.page === 'module') {
+    headerTitle.textContent = '📚 Modul';
+  } else {
+    headerTitle.textContent = titles[state.page] || (userName ? `📈 Investmentlexikon für ${userName}` : '📈 Investmentlexikon');
+    if (state.page === 'home' && userName) {
+      headerTitle.style.cursor = 'pointer';
+      headerTitle.dataset.action = 'editName';
+    } else {
+      headerTitle.style.cursor = '';
+      delete headerTitle.dataset.action;
+    }
+  }
+
+  // Page content
+  let html = '';
+  switch(state.page) {
+    case 'home': html = renderHome(); break;
+    case 'search': html = renderSearch(); break;
+    case 'favorites': html = renderFavorites(); break;
+    case 'quiz': html = renderQuiz(); break;
+    case 'calc': html = renderCalc(); break;
+    case 'term': html = renderTerm(); break;
+    case 'category': html = renderCategory(); break;
+    case 'module': html = renderModule(); break;
+    case 'learn-pick': html = renderLearnPick(); break;
+    case 'learn': html = renderLearn(); break;
+    case 'learn-done': html = renderLearnDone(); break;
+    case 'onboarding': html = renderOnboarding(); break;
+    case 'disclaimer': html = renderDisclaimer(); break;
+    default: html = renderHome();
+  }
+  app.innerHTML = html;
+  bindEvents();
+}
+
+// ============================================================
+// HOME
+// ============================================================
+function renderHome() {
+  const dayIdx = Math.floor(Date.now() / 86400000) % TERMS.length;
+  const dayTerm = TERMS[dayIdx];
+  const catGrid = CATEGORIES.map(c => `
+    <div class="cat-card" data-action="gocat" data-id="${c.id}">
+      <div class="cat-icon">${c.icon}</div>
+      <div class="cat-name">${c.name}</div>
+    </div>`).join('');
+
+  return `<div class="page">
+    <div class="day-term" data-action="goterm" data-id="${dayTerm.id}">
+      <div class="day-term-label">Begriff des Tages 💡</div>
+      <div class="day-term-name">${dayTerm.icon} ${dayTerm.name}</div>
+      <div class="day-term-short">${dayTerm.shortExplanation.substring(0,80)}…</div>
+    </div>
+
+    <div class="section-title">Was kann ich mit meinem Geld machen?</div>
+    ${renderInvestments()}
+
+    <div data-action="golearn" style="background:linear-gradient(135deg,#8b5cf6,#3b82f6);border-radius:16px;padding:18px 20px;margin-bottom:16px;cursor:pointer;display:flex;align-items:center;gap:14px">
+      <div style="font-size:40px">🎓</div>
+      <div>
+        <div style="color:#fff;font-size:17px;font-weight:700;margin-bottom:3px">Starte dein Wissen</div>
+        <div style="color:rgba(255,255,255,.8);font-size:13px">Lerne alle Begriffe Schritt für Schritt — mit Fortschrittsanzeige</div>
+        <div style="margin-top:8px;background:rgba(255,255,255,.2);border-radius:20px;height:6px;overflow:hidden">
+          <div style="height:100%;background:#fff;border-radius:20px;width:${Math.round((understood.length/TERMS.length)*100)}%"></div>
+        </div>
+        <div style="color:rgba(255,255,255,.8);font-size:11px;margin-top:4px">${understood.length} von ${TERMS.length} Begriffen verstanden</div>
+      </div>
+    </div>
+
+    <div class="section-title">Kategorien</div>
+    <div class="grid-2">${catGrid}</div>
+
+    <div class="section-title">Spezial-Module</div>
+    ${MODULES.map(m => `
+      <div class="module-card" data-action="gomodule" data-id="${m.id}">
+        <div class="module-icon">${m.icon}</div>
+        <div class="module-title">${m.title}</div>
+        <div class="module-desc">${m.desc}</div>
+      </div>`).join('')}
+
+    <div class="footer-note" data-action="godisclaimer" style="cursor:pointer">Kein Ersatz für Anlageberatung. Alle Angaben ohne Gewähr.<br><span style="color:var(--blue);text-decoration:underline">Über diese App & Disclaimer →</span></div>
+  </div>`;
+}
+
+function renderInvestments() {
+  const items = [
+    {icon:'🛑',name:'Geld auf dem Konto lassen',risk:'VERLUST durch Inflation',rendite:'−1 bis −3%/Jahr real',aufwand:'Nichts',recommended:false,worst:true,note:'Inflation frisst dein Geld — du verlierst Kaufkraft ohne es zu merken. Keine Altersvorsorge. Und das Geld liegt griffbereit für Impulskäufe.'},
+    {icon:'🏦',name:'Sparkonto / Tagesgeld',risk:'Sehr niedrig',rendite:'1–3% (oft unter Inflation)',aufwand:'Kaum',recommended:false,note:'Besser als nichts — aber Inflation kann die Zinsen auffressen.'},
+    {icon:'🏠',name:'Immobilien',risk:'Mittel',rendite:'3–7%',aufwand:'Hoch',recommended:false},
+    {icon:'📊',name:'ETFs/Aktien langfristig',risk:'Mittel',rendite:'5–10%',aufwand:'Niedrig',recommended:true},
+    {icon:'⚡',name:'Daytrading',risk:'Sehr hoch',rendite:'Unvorhersehbar',aufwand:'Extrem hoch',recommended:false,warning:true},
+    {icon:'🥇',name:'Gold/Edelmetalle',risk:'Mittel',rendite:'1–4%',aufwand:'Niedrig',recommended:false},
+  ];
+  return items.map(i => `
+    <div class="inv-tile" style="${i.worst ? 'border-color:#ef444466;background:var(--bg2)' : ''}">
+      <div class="inv-header">
+        <span class="inv-icon">${i.icon}</span>
+        <div>
+          <div class="inv-name">${i.name}${i.recommended ? ' ⭐' : ''}${i.warning ? ' ⚠️' : ''}</div>
+          ${i.recommended ? '<div class="inv-recommended">EMPFOHLEN FÜR ANFÄNGER</div>' : ''}
+          ${i.worst ? '<div style="font-size:11px;font-weight:600;color:#ef4444">SCHLECHTESTE OPTION</div>' : ''}
+        </div>
+      </div>
+      <div class="inv-row"><span class="inv-key">Effekt</span><span class="inv-val" style="${i.worst ? 'color:#ef4444' : ''}">${i.risk}</span></div>
+      <div class="inv-row"><span class="inv-key">Rendite/Jahr</span><span class="inv-val" style="${i.worst ? 'color:#ef4444' : ''}">${i.rendite}</span></div>
+      <div class="inv-row"><span class="inv-key">Aufwand</span><span class="inv-val">${i.aufwand}</span></div>
+      ${i.note ? `<div style="font-size:12px;color:var(--text2);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">${i.note}</div>` : ''}
+    </div>`).join('');
+}
+
+// ============================================================
+// SEARCH
+// ============================================================
+function renderSearch() {
+  const results = state.searchQ.length > 1 ? termSearch(state.searchQ) : [];
+  const list = results.map(t => termRow(t)).join('');
+  return `<div class="page">
+    <input class="search-box" id="searchInput" type="search" placeholder="Begriff suchen..." value="${state.searchQ}" autocomplete="off">
+    <div class="search-results">
+      ${state.searchQ.length < 2 ? '<div class="empty"><div class="empty-icon">🔍</div>Mindestens 2 Zeichen eingeben</div>'
+        : results.length === 0 ? '<div class="empty"><div class="empty-icon">😕</div>Nichts gefunden</div>'
+        : list}
+    </div>
+  </div>`;
+}
+
+// ============================================================
+// FAVORITES
+// ============================================================
+function renderFavorites() {
+  const favTerms = TERMS.filter(t => favorites.includes(t.id));
+  return `<div class="page">
+    <div class="section-title">⭐ Meine Favoriten</div>
+    ${favTerms.length === 0
+      ? '<div class="empty"><div class="empty-icon">⭐</div>Noch keine Favoriten.<br>Tippe auf ⭐ in einem Begriff.</div>'
+      : favTerms.map(t => termRow(t)).join('')}
+  </div>`;
+}
+
+// ============================================================
+// TERM ROW
+// ============================================================
+function termRow(t) {
+  const cat = getCatById(t.category);
+  return `<div class="term-row" data-action="goterm" data-id="${t.id}">
+    <div class="term-icon-wrap" style="background:${cat ? cat.color + '22' : '#f1f5f9'}">${t.icon}</div>
+    <div class="term-info">
+      <div class="term-name">${t.name}</div>
+      <div class="term-short">${t.shortExplanation.substring(0,60)}…</div>
+    </div>
+    <div class="chevron">›</div>
+  </div>`;
+}
+
+// ============================================================
+// TERM DETAIL
+// ============================================================
+function renderTerm() {
+  const t = getTermById(state.termId);
+  if (!t) return '<div class="page">Begriff nicht gefunden.</div>';
+  const cat = getCatById(t.category);
+  const isFav = favorites.includes(t.id);
+  const isUnderstood = understood.includes(t.id);
+  const related = (t.relatedTerms || []).map(id => {
+    const rt = getTermById(id);
+    return rt ? `<span class="chip" data-action="goterm" data-id="${id}">${rt.icon} ${rt.name}</span>` : '';
+  }).join('');
+
+  return `<div class="page">
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="font-size:56px;margin-bottom:8px">${t.icon}</div>
+      <div style="font-size:24px;font-weight:700;color:var(--text)">${t.name}</div>
+      <div style="margin:8px 0"><span class="stars">${stars(t.difficulty)}</span></div>
+      ${cat ? `<span class="badge badge-blue">${cat.icon} ${cat.name}</span>` : ''}
+    </div>
+
+    <div class="box box-blue"><strong>📖 Einfach erklärt:</strong><br>${t.shortExplanation}</div>
+    <div class="card-sm"><strong>💡 Beispiel:</strong><br><span style="color:var(--text2);font-size:14px">${t.example}</span></div>
+    <div class="card-sm"><strong>❓ Warum wichtig?</strong><br><span style="color:var(--text2);font-size:14px">${t.whyImportant}</span></div>
+    <div class="box box-orange"><strong>⚠️ Anfänger-Fehler:</strong><br>${t.beginnerMistake}</div>
+    <div class="box box-green"><strong>🧠 Merksatz:</strong><br>${t.memSatz}</div>
+    ${t.riskNote ? `<div class="box box-red"><strong>🚨 Risikohinweis:</strong><br>${t.riskNote}</div>` : ''}
+
+    ${related ? `<div style="margin-bottom:16px"><strong style="font-size:14px">Verwandte Begriffe:</strong><div class="chips">${related}</div></div>` : ''}
+
+    <button class="btn ${isUnderstood ? 'btn-green' : 'btn-outline'}" data-action="toggleUnderstood" data-id="${t.id}">
+      ${isUnderstood ? '✓ Verstanden!' : '○ Als verstanden markieren'}
+    </button>
+    <button class="btn btn-outline" data-action="toggleFav" data-id="${t.id}">
+      ${isFav ? '⭐ Aus Favoriten entfernen' : '☆ Zu Favoriten hinzufügen'}
+    </button>
+  </div>`;
+}
+
+// ============================================================
+// CATEGORY
+// ============================================================
+function renderCategory() {
+  const cat = getCatById(state.categoryId);
+  const terms = termsByCategory(state.categoryId);
+  return `<div class="page">
+    ${terms.map(t => termRow(t)).join('')}
+  </div>`;
+}
+
+// ============================================================
+// QUIZ
+// ============================================================
+function getQuizTerms() {
+  const shuffled = [...TERMS].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, 10);
+}
+
+function renderQuiz() {
+  if (state.quizDone) return renderQuizResult();
+  if (state.quizQuestions.length === 0) return renderQuizStart();
+
+  const q = state.quizQuestions[state.quizQ];
+  const progress = (state.quizQ / state.quizQuestions.length) * 100;
+
+  return `<div class="page">
+    <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:16px">Frage ${state.quizQ + 1} von ${state.quizQuestions.length}</div>
+    <div class="card" style="margin-bottom:16px">
+      <div style="font-size:32px;text-align:center;margin-bottom:12px">${q.icon}</div>
+      <div style="font-size:18px;font-weight:700;text-align:center;color:var(--text)">${q.quiz.q}</div>
+    </div>
+    ${q.quiz.options.map((opt, i) => {
+      let cls = 'quiz-option';
+      if (state.quizAnswered) {
+        if (i === q.quiz.correct) cls += ' correct';
+        else if (i === state.quizSelected) cls += ' wrong';
+      }
+      return `<button class="${cls}" ${state.quizAnswered ? 'disabled' : ''} data-action="quizAnswer" data-id="${i}">${opt}</button>`;
+    }).join('')}
+    ${state.quizAnswered ? `
+      <div class="box ${state.quizSelected === q.quiz.correct ? 'box-green' : 'box-orange'}" style="margin-top:8px">
+        ${state.quizSelected === q.quiz.correct ? '✅ Richtig!' : `❌ Leider falsch. Richtig: "${q.quiz.options[q.quiz.correct]}"`}
+      </div>
+      <button class="btn btn-green" data-action="quizNext" style="margin-top:8px">
+        ${state.quizQ < state.quizQuestions.length - 1 ? 'Nächste Frage →' : 'Ergebnis anzeigen'}
+      </button>` : ''}
+  </div>`;
+}
+
+function renderQuizStart() {
+  return `<div class="page">
+    <div style="text-align:center;padding:40px 20px">
+      <div style="font-size:64px;margin-bottom:16px">🧠</div>
+      <div style="font-size:24px;font-weight:700;margin-bottom:8px">Börsen-Quiz</div>
+      <div style="color:var(--text2);margin-bottom:8px">10 Fragen aus allen Kategorien</div>
+      <div style="color:var(--text2);font-size:14px;margin-bottom:24px">Highscore: ${highscore}/10</div>
+      <button class="btn btn-green" data-action="startQuiz">Quiz starten 🚀</button>
+    </div>
+  </div>`;
+}
+
+function renderQuizResult() {
+  const pct = Math.round((state.quizScore / state.quizQuestions.length) * 100);
+  const emoji = pct >= 80 ? '🏆' : pct >= 60 ? '👍' : '📚';
+  const msg = pct >= 80 ? 'Hervorragend!' : pct >= 60 ? 'Gut gemacht!' : 'Weitermachen!';
+  return `<div class="page">
+    <div style="text-align:center;padding:40px 20px">
+      <div style="font-size:64px;margin-bottom:16px">${emoji}</div>
+      <div style="font-size:32px;font-weight:700;margin-bottom:8px">${state.quizScore}/${state.quizQuestions.length}</div>
+      <div style="font-size:18px;color:var(--text2);margin-bottom:4px">${msg}</div>
+      <div style="font-size:14px;color:var(--text2);margin-bottom:24px">Highscore: ${highscore}/10</div>
+      <button class="btn btn-green" data-action="startQuiz">Nochmal spielen</button>
+      <button class="btn btn-outline" data-action="nav" data-id="home">Zur Startseite</button>
+    </div>
+  </div>`;
+}
+
+// ============================================================
+// CALC
+// ============================================================
+function renderCalc() {
+  const tabs = ['Zinseszins','TER-Vergleich','Steuer','Fehler kosten'];
+  const tabBar = `<div class="tab-bar">${tabs.map((t,i) =>
+    `<button class="tab ${state.calcTab===i?'active':''}" data-action="calcTab" data-id="${i}">${t}</button>`
+  ).join('')}</div>`;
+
+  let content = '';
+  if (state.calcTab === 0) content = renderCalcZinseszins();
+  else if (state.calcTab === 1) content = renderCalcTER();
+  else if (state.calcTab === 2) content = renderCalcSteuer();
+  else content = renderCalcFehler();
+
+  return `<div class="page">${tabBar}${content}</div>`;
+}
+
+function renderCalcZinseszins() {
+  const start = parseFloat(document.getElementById('cz_start')?.value || 1000);
+  const monthly = parseFloat(document.getElementById('cz_monthly')?.value || 100);
+  const years = parseInt(document.getElementById('cz_years')?.value || 20);
+  const rate = parseFloat(document.getElementById('cz_rate')?.value || 7) / 100;
+
+  let val = start;
+  const data = [val];
+  for (let y = 0; y < years; y++) {
+    for (let m = 0; m < 12; m++) { val = val * (1 + rate/12) + monthly; }
+    data.push(val);
+  }
+  const invested = start + monthly * 12 * years;
+  const gain = val - invested;
+
+  return `
+    <div class="input-group"><label class="input-label">Startkapital (€)</label>
+      <input class="input-field" id="cz_start" type="number" value="1000" data-action="calcUpdate"></div>
+    <div class="input-group"><label class="input-label">Monatliche Rate (€)</label>
+      <input class="input-field" id="cz_monthly" type="number" value="100" data-action="calcUpdate"></div>
+    <div class="input-group"><label class="input-label">Laufzeit (Jahre)</label>
+      <input class="input-field" id="cz_years" type="number" value="20" min="1" max="50" data-action="calcUpdate"></div>
+    <div class="input-group"><label class="input-label">Rendite pro Jahr (%)</label>
+      <input class="input-field" id="cz_rate" type="number" value="7" step="0.1" data-action="calcUpdate"></div>
+    <div class="result-box">
+      <div class="result-num">${fmt(val)}</div>
+      <div class="result-label">Endkapital nach ${years} Jahren</div>
+      <div style="display:flex;justify-content:space-around;margin-top:12px;font-size:13px">
+        <div><div style="font-weight:700;color:var(--text)">${fmt(invested)}</div><div style="color:var(--text2)">Eingezahlt</div></div>
+        <div><div style="font-weight:700;color:var(--green)">${fmt(gain)}</div><div style="color:var(--text2)">Rendite</div></div>
+      </div>
+    </div>
+    ${lineChart(data, years)}`;
+}
+
+function renderCalcTER() {
+  const start = 10000;
+  const monthly = 100;
+  const years = 30;
+  const rate = 0.07;
+  const ter1 = 0.001, ter2 = 0.008;
+
+  function calc(ter) {
+    let v = start;
+    for (let y = 0; y < years; y++) {
+      for (let m = 0; m < 12; m++) v = v * (1 + (rate-ter)/12) + monthly;
+    }
+    return v;
+  }
+
+  const v1 = calc(ter1), v2 = calc(ter2);
+  const diff = v1 - v2;
+
+  return `
+    <div class="box box-blue">Simulation: 10.000€ Start + 100€/Monat, 7% Rendite, 30 Jahre</div>
+    <div class="card" style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div><strong>Günstiger ETF</strong><div style="font-size:13px;color:var(--text2)">TER 0,10%/Jahr</div></div>
+        <div style="font-size:20px;font-weight:700;color:var(--green)">${fmt(v1)}</div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div><strong>Teurer Fonds</strong><div style="font-size:13px;color:var(--text2)">TER 0,80%/Jahr</div></div>
+        <div style="font-size:20px;font-weight:700;color:var(--red)">${fmt(v2)}</div>
+      </div>
+    </div>
+    <div class="result-box">
+      <div class="result-num">${fmt(diff)}</div>
+      <div class="result-label">Mehr mit günstigem ETF nach 30 Jahren</div>
+    </div>
+    ${barChart([v2,v1],['Teurer Fonds\n0,80%','Günstiger ETF\n0,10%'])}`;
+}
+
+function renderCalcSteuer() {
+  const buy = parseFloat(document.getElementById('cs_buy')?.value || 10000);
+  const sell = parseFloat(document.getElementById('cs_sell')?.value || 15000);
+  const used = parseFloat(document.getElementById('cs_used')?.value || 0);
+  const isETF = document.getElementById('cs_etf')?.checked ?? true;
+
+  const rawGain = sell - buy;
+  const freibetrag = Math.max(0, 1000 - used);
+  const taxable = Math.max(0, rawGain - freibetrag);
+  const teilfrei = isETF ? taxable * 0.7 : taxable;
+  const abgelt = teilfrei * 0.25;
+  const soli = abgelt * 0.055;
+  const steuer = abgelt + soli;
+  const netto = rawGain - steuer;
+
+  return `
+    <div class="input-group"><label class="input-label">Kaufpreis (€)</label>
+      <input class="input-field" id="cs_buy" type="number" value="10000" data-action="calcUpdate"></div>
+    <div class="input-group"><label class="input-label">Verkaufspreis (€)</label>
+      <input class="input-field" id="cs_sell" type="number" value="15000" data-action="calcUpdate"></div>
+    <div class="input-group"><label class="input-label">Bereits genutzter Freibetrag (€)</label>
+      <input class="input-field" id="cs_used" type="number" value="0" min="0" max="1000" data-action="calcUpdate"></div>
+    <div class="input-group" style="display:flex;align-items:center;gap:10px">
+      <input type="checkbox" id="cs_etf" ${document.getElementById('cs_etf')?.checked !== false ? 'checked' : ''} data-action="calcUpdate" style="width:20px;height:20px">
+      <label class="input-label" style="margin:0" for="cs_etf">Aktien-ETF (30% Teilfreistellung)</label>
+    </div>
+    <div class="result-box">
+      <div style="display:grid;gap:8px;text-align:left;font-size:14px">
+        <div style="display:flex;justify-content:space-between"><span>Brutto-Gewinn</span><strong>${fmt(rawGain)}</strong></div>
+        <div style="display:flex;justify-content:space-between"><span>Freibetrag</span><strong style="color:var(--green)">- ${fmt(Math.min(freibetrag,rawGain))}</strong></div>
+        ${isETF ? `<div style="display:flex;justify-content:space-between"><span>Teilfreistellung (30%)</span><strong style="color:var(--green)">- ${fmt(Math.max(0,taxable*0.3))}</strong></div>` : ''}
+        <div style="display:flex;justify-content:space-between"><span>Abgeltungssteuer 25%</span><strong style="color:var(--red)">- ${fmt(abgelt)}</strong></div>
+        <div style="display:flex;justify-content:space-between"><span>Soli 5,5%</span><strong style="color:var(--red)">- ${fmt(soli)}</strong></div>
+        <div style="border-top:1px solid var(--border);padding-top:8px;display:flex;justify-content:space-between"><span><strong>Netto-Gewinn</strong></span><strong style="color:var(--green);font-size:18px">${fmt(netto)}</strong></div>
+      </div>
+    </div>`;
+}
+
+function renderCalcFehler() {
+  const fehler = [
+    {id:'panic',label:'Panikverkauf im Crash',desc:'Du verkaufst im Crash und verpasst die Erholung.',cost:y=>Math.pow(1.07,y)*10000-10000,miss:y=>Math.pow(1.35,y)*10000-10000},
+    {id:'late',label:'10 Jahre zu spät gestartet',desc:'Statt mit 25 erst mit 35 angefangen.',cost:y=>0,miss:y=>(Math.pow(1.07,y+10)-Math.pow(1.07,y))*10000},
+    {id:'expensive',label:'Teurer Fonds (1,5% TER)',desc:'Teurer statt günstiger ETF über 30 Jahre.',cost:y=>0,miss:y=>(Math.pow(1.07,y)-Math.pow(1.055,y))*10000},
+    {id:'tagesgeld',label:'Tagesgeld statt ETF',desc:'Alle 30 Jahre auf Tagesgeld (3%) statt ETF (7%).',cost:y=>0,miss:y=>(Math.pow(1.07,y)-Math.pow(1.03,y))*10000},
+  ];
+
+  const sel = document.getElementById('cf_sel')?.value || 'panic';
+  const f = fehler.find(x => x.id === sel) || fehler[0];
+  const years = 20;
+  const miss = f.miss(years);
+
+  return `
+    <div class="input-group"><label class="input-label">Welcher Fehler?</label>
+      <select id="cf_sel" data-action="calcUpdate">
+        ${fehler.map(f => `<option value="${f.id}">${f.label}</option>`).join('')}
+      </select>
+    </div>
+    <div class="box box-orange">${f.desc}</div>
+    <div class="result-box">
+      <div class="result-num" style="color:var(--red)">- ${fmt(miss)}</div>
+      <div class="result-label">Entgangene Rendite über 20 Jahre (10.000€ Basis)</div>
+    </div>
+    <div class="box box-green">💡 Der Fehler kostet dich so viel. Fang jetzt an, mach es richtig.</div>`;
+}
+
+// ============================================================
+// CHARTS
+// ============================================================
+function lineChart(data, years) {
+  const W = 340, H = 120, pad = 10;
+  const max = Math.max(...data);
+  const pts = data.map((v,i) => {
+    const x = pad + (i / (data.length - 1)) * (W - 2*pad);
+    const y = H - pad - ((v / max) * (H - 2*pad));
+    return `${x},${y}`;
+  }).join(' ');
+
+  return `<div class="chart-wrap" style="background:var(--bg3);padding:12px">
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block">
+      <polyline points="${pts}" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="${pad}" cy="${H-pad-((data[0]/max)*(H-2*pad))}" r="4" fill="#3b82f6"/>
+      <circle cx="${W-pad}" cy="${H-pad-((data[data.length-1]/max)*(H-2*pad))}" r="4" fill="#10b981"/>
+    </svg>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-top:4px">
+      <span>Heute</span><span>In ${years} Jahren</span>
+    </div>
+  </div>`;
+}
+
+function barChart(vals, labels) {
+  const W = 300, H = 120, pad = 20;
+  const max = Math.max(...vals);
+  const colors = ['#ef4444','#10b981'];
+  const barW = (W - 2*pad) / vals.length - 10;
+
+  const bars = vals.map((v,i) => {
+    const bh = ((v/max) * (H - 2*pad));
+    const x = pad + i * ((W - 2*pad) / vals.length) + 5;
+    const y = H - pad - bh;
+    return `<rect x="${x}" y="${y}" width="${barW}" height="${bh}" rx="4" fill="${colors[i]}"/>`;
+  }).join('');
+
+  return `<div class="chart-wrap" style="background:var(--bg3);padding:12px">
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block">
+      ${bars}
+    </svg>
+    <div style="display:flex;justify-content:space-around;font-size:11px;color:var(--text2);margin-top:4px">
+      ${labels.map((l,i) => `<span style="color:${['#ef4444','#10b981'][i]}">${l}</span>`).join('')}
+    </div>
+  </div>`;
+}
+
+// ============================================================
+// MODULES
+// ============================================================
+function renderModule() {
+  if (state.moduleId === 'trade-republic') return renderModuleTR();
+  if (state.moduleId === 'etf-vs-aktie') return renderModuleETFAktie();
+  if (state.moduleId === 'steuer-erklaert') return renderModuleSteuer();
+  if (state.moduleId === 'warnung-zocken') return renderModuleWarnung();
+  return '<div class="page">Modul nicht gefunden.</div>';
+}
+
+function renderModuleTR() {
+  const items = [
+    ['Sparplan','Automatischer monatlicher Kauf eines ETFs — du legst Betrag und Ausführungsrhythmus fest.'],
+    ['Saveback','Trade Republic zahlt Zinsen auf dein Verrechnungskonto zurück.'],
+    ['Fraktionierter Kauf','Du kannst Bruchteilsaktien kaufen — z.B. 0,5 Apple-Aktien für 100€.'],
+    ['Marktorder','Sofortkauf zum aktuellen Kurs. Bei TR: immer Marktorder mit 1€ Gebühr.'],
+    ['Limit-Order','Kaufen/Verkaufen erst wenn Kurs dein Limit erreicht.'],
+    ['Xetra','Wichtigste deutsche Börse — Trade Republic handelt oft direkt über Gettex.'],
+    ['Verrechnungskonto','Dein Cash-Konto bei TR — hier landet Geld vor dem Kauf.'],
+    ['ISIN','Internationale Wertpapier-Kennummer — eindeutige ID jedes ETFs/Aktie.'],
+    ['Ausführungspreis','Der tatsächliche Kurs, zu dem deine Order ausgeführt wurde.'],
+    ['Depot-Übertrag','Du kannst ETFs von anderen Brokern zu TR übertragen (und umgekehrt).'],
+    ['Jahressteuerbescheinigung','TR schickt dir Ende Jahr ein Dokument für die Steuererklärung.'],
+    ['Steueroptimierung','TR nutzt automatisch deinen Freistellungsauftrag.'],
+    ['2% Zinsen','TR zahlt Zinsen auf unveranlagtes Cash — lohnt sich aber nicht als Hauptstrategie.'],
+  ];
+  return `<div class="page">
+    <div class="section-title">📱 Trade Republic Begriffe</div>
+    ${items.map(([t,d]) => `<div class="card-sm"><strong>${t}</strong><br><span style="font-size:13px;color:var(--text2)">${d}</span></div>`).join('')}
+  </div>`;
+}
+
+function renderModuleETFAktie() {
+  return `<div class="page">
+    <div class="section-title">⚔️ ETF vs. Einzelaktie</div>
+    <div style="overflow-x:auto">
+    <table class="compare-table">
+      <tr><th></th><th>📊 ETF</th><th>📈 Einzelaktie</th></tr>
+      <tr><td>Risiko</td><td style="color:var(--green)">Niedrig (diversifiziert)</td><td style="color:var(--red)">Hoch (Totalverlust möglich)</td></tr>
+      <tr><td>Aufwand</td><td style="color:var(--green)">Minimal</td><td style="color:var(--red)">Hoch (Recherche nötig)</td></tr>
+      <tr><td>Rendite</td><td>Marktrendite (7–10%/J)</td><td>Kann mehr ODER weniger sein</td></tr>
+      <tr><td>Kosten</td><td style="color:var(--green)">0,07–0,20% TER</td><td>Nur Ordergebühr</td></tr>
+      <tr><td>Empfehlung</td><td style="color:var(--green)">✅ Für alle Anfänger</td><td>Nur für Fortgeschrittene</td></tr>
+      <tr><td>Wissen nötig</td><td style="color:var(--green)">Wenig</td><td style="color:var(--red)">Viel</td></tr>
+    </table>
+    </div>
+    <div class="box box-green" style="margin-top:16px"><strong>Fazit:</strong> Für 95% der Anleger sind ETFs die bessere Wahl. Wenn du trotzdem Einzelaktien willst: max. 10-20% des Portfolios.</div>
+  </div>`;
+}
+
+function renderModuleSteuer() {
+  return `<div class="page">
+    <div class="section-title">🧾 Steuer — Schritt für Schritt</div>
+    <div class="box box-blue">Beispiel: Du kaufst MSCI World ETF für 10.000€, verkaufst 5 Jahre später für 15.000€.</div>
+    <div class="card-sm"><strong>Schritt 1: Gewinn berechnen</strong><br><span style="color:var(--text2);font-size:13px">15.000€ − 10.000€ = 5.000€ Gewinn</span></div>
+    <div class="card-sm"><strong>Schritt 2: Sparerpauschbetrag abziehen</strong><br><span style="color:var(--text2);font-size:13px">5.000€ − 1.000€ = 4.000€ steuerpflichtig (wenn Freibetrag noch frei)</span></div>
+    <div class="card-sm"><strong>Schritt 3: Teilfreistellung (30%) für Aktien-ETF</strong><br><span style="color:var(--text2);font-size:13px">4.000€ × 70% = 2.800€ wirklich steuerpflichtig</span></div>
+    <div class="card-sm"><strong>Schritt 4: Abgeltungssteuer 25%</strong><br><span style="color:var(--text2);font-size:13px">2.800€ × 25% = 700€ Steuer</span></div>
+    <div class="card-sm"><strong>Schritt 5: Solidaritätszuschlag 5,5%</strong><br><span style="color:var(--text2);font-size:13px">700€ × 5,5% = 38,50€ Soli</span></div>
+    <div class="box box-green"><strong>Gesamt: 738,50€ Steuern auf 5.000€ Gewinn.</strong><br>Netto: 4.261,50€ in der Tasche.</div>
+    <div class="box box-orange"><strong>💡 Tipp:</strong> Freistellungsauftrag bei deinem Broker stellen! Sonst zieht die Bank alles automatisch ab.</div>
+  </div>`;
+}
+
+function renderModuleWarnung() {
+  return `<div class="page">
+    <div class="section-title">⚠️ Warnung: Zocken an der Börse</div>
+    <div class="box box-red"><strong>Diese Produkte vernichten Geld:</strong></div>
+    <div class="card-sm"><strong>⚡ Hebel-Produkte / CFDs</strong><br><span style="color:var(--text2);font-size:13px">80–90% aller CFD-Händler verlieren Geld laut offiziellen EU-Statistiken. Du spielst gegen Profis.</span></div>
+    <div class="card-sm"><strong>🎮 Meme-Aktien</strong><br><span style="color:var(--text2);font-size:13px">GameStop, AMC, etc.: Hypes enden fast immer mit Verlusten für Nachkäufer. Die ersten verkaufen, du hältst den Bag.</span></div>
+    <div class="card-sm"><strong>🚀 "Hot Tips" von Social Media</strong><br><span style="color:var(--text2);font-size:13px">Wer dir auf TikTok/Instagram Reichtum verspricht, verdient an deinen Verlusten oder an Affiliate-Links.</span></div>
+    <div class="card-sm"><strong>⏰ Day-Trading</strong><br><span style="color:var(--text2);font-size:13px">Studien zeigen: >70% der Day-Trader verlieren Geld. Du konkurrierst mit Algorithmen und Vollzeit-Profis.</span></div>
+    <div class="card-sm"><strong>₿ Krypto-Zocken</strong><br><span style="color:var(--text2);font-size:13px">Krypto kann ein kleiner Teil des Portfolios sein — aber als Hauptanlage mit Hebel? Rezept für Ruin.</span></div>
+    <div class="box box-green"><strong>Was wirklich funktioniert:</strong><br>MSCI World / FTSE All-World ETF Sparplan + buy-and-hold + Zeit. Langweilig — aber es klappt.</div>
+  </div>`;
+}
+
+// ============================================================
+// LEARN MODE
+// ============================================================
+function renderLearnPick() {
+  const totalUnd = understood.length;
+  return `<div class="page">
+    <div class="section-title">🎓 Starte dein Wissen</div>
+    <div class="section-sub">Wähle, was du lernen möchtest:</div>
+
+    <div class="module-card" data-action="startLearn" data-id="all" style="border:2px solid #8b5cf6">
+      <div class="module-icon">🌍</div>
+      <div class="module-title">Alle Begriffe</div>
+      <div class="module-desc">${TERMS.length} Begriffe aus allen Kategorien</div>
+      <div style="margin-top:10px;background:var(--bg3);border-radius:20px;height:6px;overflow:hidden">
+        <div style="height:100%;background:#8b5cf6;border-radius:20px;width:${Math.round((totalUnd/TERMS.length)*100)}%"></div>
+      </div>
+      <div style="font-size:12px;color:var(--text2);margin-top:4px">${totalUnd} / ${TERMS.length} verstanden</div>
+    </div>
+
+    ${CATEGORIES.map(c => {
+      const catTerms = termsByCategory(c.id);
+      const catUnd = catTerms.filter(t => understood.includes(t.id)).length;
+      const pct = Math.round((catUnd/catTerms.length)*100);
+      return `<div class="module-card" data-action="startLearn" data-id="${c.id}">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <span style="font-size:28px">${c.icon}</span>
+          <div>
+            <div class="module-title" style="margin:0">${c.name}</div>
+            <div class="module-desc" style="margin:0">${catTerms.length} Begriffe</div>
+          </div>
+          ${catUnd === catTerms.length ? '<span style="margin-left:auto;font-size:20px">✅</span>' : ''}
+        </div>
+        <div style="background:var(--bg3);border-radius:20px;height:5px;overflow:hidden">
+          <div style="height:100%;background:${c.color};border-radius:20px;width:${pct}%"></div>
+        </div>
+        <div style="font-size:11px;color:var(--text2);margin-top:4px">${catUnd} / ${catTerms.length} verstanden</div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function renderLearn() {
+  const terms = state.learnTerms;
+  if (!terms.length) return '<div class="page"><div class="empty">Keine Begriffe.</div></div>';
+  const idx = state.learnIdx;
+  const t = terms[idx];
+  const total = terms.length;
+  const pct = Math.round((idx / total) * 100);
+  const isUnd = understood.includes(t.id);
+  const cat = getCatById(t.category);
+
+  return `<div class="page">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <div style="flex:1;background:var(--bg3);border-radius:20px;height:8px;overflow:hidden">
+        <div style="height:100%;background:linear-gradient(90deg,#8b5cf6,#3b82f6);border-radius:20px;width:${pct}%;transition:width .3s"></div>
+      </div>
+      <div style="font-size:13px;color:var(--text2);white-space:nowrap">${idx + 1} / ${total}</div>
+    </div>
+
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="font-size:52px;margin-bottom:8px">${t.icon}</div>
+      <div style="font-size:22px;font-weight:700;color:var(--text)">${t.name}</div>
+      <div style="margin:6px 0"><span class="stars">${stars(t.difficulty)}</span></div>
+      ${cat ? `<span class="badge badge-blue">${cat.icon} ${cat.name}</span>` : ''}
+    </div>
+
+    <div class="box box-blue"><strong>📖 Einfach erklärt:</strong><br>${t.shortExplanation}</div>
+    <div class="card-sm"><strong>💡 Beispiel:</strong><br><span style="color:var(--text2);font-size:14px">${t.example}</span></div>
+    <div class="box box-orange"><strong>⚠️ Anfänger-Fehler:</strong><br>${t.beginnerMistake}</div>
+    <div class="box box-green"><strong>🧠 Merksatz:</strong><br>${t.memSatz}</div>
+    ${t.riskNote ? `<div class="box box-red"><strong>🚨 Risiko:</strong><br>${t.riskNote}</div>` : ''}
+
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn btn-outline" style="flex:0 0 auto;width:auto;padding:13px 16px" data-action="learnSkip">Überspringen →</button>
+      <button class="btn btn-green" style="flex:1" data-action="learnUnderstood">✓ Verstanden & Weiter</button>
+    </div>
+    ${idx > 0 ? `<button class="btn btn-outline" data-action="learnBack" style="margin-top:4px">← Zurück</button>` : ''}
+  </div>`;
+}
+
+function renderLearnDone() {
+  const terms = state.learnTerms;
+  const newUnd = terms.filter(t => understood.includes(t.id)).length;
+  const pct = Math.round((newUnd / terms.length) * 100);
+  const emoji = pct >= 80 ? '🏆' : pct >= 50 ? '🎉' : '💪';
+  return `<div class="page">
+    <div style="text-align:center;padding:40px 20px">
+      <div style="font-size:64px;margin-bottom:16px">${emoji}</div>
+      <div style="font-size:26px;font-weight:700;margin-bottom:8px">Lerneinheit abgeschlossen!</div>
+      <div style="font-size:16px;color:var(--text2);margin-bottom:20px">${newUnd} von ${terms.length} Begriffen verstanden</div>
+      <div style="background:var(--bg3);border-radius:20px;height:10px;overflow:hidden;margin-bottom:24px">
+        <div style="height:100%;background:linear-gradient(90deg,#8b5cf6,#10b981);border-radius:20px;width:${pct}%"></div>
+      </div>
+      <button class="btn btn-green" data-action="golearn">Nochmal Kategorie wählen</button>
+      <button class="btn btn-outline" data-action="nav" data-id="home">Zur Startseite</button>
+    </div>
+  </div>`;
+}
+
+// ============================================================
+// ONBOARDING & DISCLAIMER
+// ============================================================
+function renderOnboarding() {
+  return `<div class="page" style="display:flex;flex-direction:column;justify-content:center;min-height:calc(100vh - 140px)">
+    <div style="text-align:center;margin-bottom:32px">
+      <div style="font-size:64px;margin-bottom:16px">📈</div>
+      <div style="font-size:26px;font-weight:700;color:var(--text);margin-bottom:8px">Investmentlexikon</div>
+      <div style="font-size:15px;color:var(--text2)">Börse verstehen — einfach erklärt</div>
+    </div>
+    <div class="card">
+      <div style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--text)">Wie heißt du?</div>
+      <input class="input-field" id="nameInput" type="text" placeholder="Dein Name..." maxlength="30" style="margin-bottom:12px;font-size:18px">
+      <button class="btn btn-green" data-action="saveName">Los geht's 🚀</button>
+    </div>
+  </div>`;
+}
+
+function renderDisclaimer() {
+  // Try to detect image extension
+  const imgSrc = 'rund.jpg';
+  return `<div class="page">
+    <div style="text-align:center;padding:24px 0 16px">
+      <img src="${imgSrc}" onerror="this.style.display='none'" style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid var(--green);margin-bottom:16px;display:block;margin-left:auto;margin-right:auto">
+      <div style="font-size:20px;font-weight:700;color:var(--text)">Sasan Amir</div>
+      <div style="font-size:14px;color:var(--text2);margin-top:4px">Ersteller dieser App</div>
+    </div>
+
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px">Über diese App</div>
+      <div style="font-size:14px;color:var(--text2);line-height:1.7">
+        Diese App wurde von Sasan Amir erstellt, um Investmentbegriffe einfach und verständlich zu erklären.
+        Das Ziel ist mehr Klarheit rund um ETFs, Aktien, Börse und Geldanlage — für alle, die das Thema endlich verstehen wollen.
+      </div>
+    </div>
+
+    <div class="box box-red">
+      <strong>⚠️ Wichtiger Hinweis</strong><br>
+      Diese App ersetzt <strong>keine professionelle Anlageberatung</strong>. Bevor du echtes Geld investierst — in ETFs, Aktien, Immobilien oder andere Anlagen — hol dir immer die Meinung von ausgebildeten Finanzprofis oder unabhängigen Beratern ein.
+    </div>
+
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px">Haftungsausschluss</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7">
+        Alle Inhalte dieser App spiegeln ausschließlich die persönliche Meinung des Erstellers wider. Es wird keinerlei Garantie für die Richtigkeit, Vollständigkeit oder Aktualität der Informationen übernommen. Der Einsatz von echtem Geld bei Investments jeglicher Art — ETFs, Aktien, Trading, Immobilien etc. — erfolgt vollständig auf eigenes Risiko. Diese App dient ausschließlich als Lernhilfe und Orientierung.
+      </div>
+    </div>
+
+    <div class="box box-green">
+      💡 Nutze diese App, um die Sprache der Börse zu lernen — dann kannst du informiertere Gespräche mit echten Beratern führen.
+    </div>
+
+    <div class="footer-note">© Sasan Amir · Alle Rechte vorbehalten</div>
+  </div>`;
+}
+
+// ============================================================
+// EVENTS
+// ============================================================
+function bindEvents() {
+  // Search input
+  const si = document.getElementById('searchInput');
+  if (si) {
+    si.addEventListener('input', e => {
+      state.searchQ = e.target.value;
+      render();
+      setTimeout(() => { const el = document.getElementById('searchInput'); if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length);} }, 0);
+    });
+  }
+  // Name input enter key
+  const ni = document.getElementById('nameInput');
+  if (ni) {
+    ni.focus();
+    ni.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const n = ni.value.trim();
+        if (n) { saveUserName(n); state.page = 'home'; render(); }
+      }
+    });
+  }
+  // Calc inputs
+  document.querySelectorAll('[data-action="calcUpdate"]').forEach(el => {
+    el.addEventListener('input', () => render());
+    el.addEventListener('change', () => render());
+  });
+}
+
+document.body.addEventListener('click', e => {
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  const action = el.dataset.action;
+  const id = el.dataset.id;
+
+  if (action === 'nav') {
+    state.prevPage = state.page;
+    state.page = id;
+    if (id === 'quiz' && state.quizDone) { state.quizDone = false; state.quizQuestions = []; }
+    render();
+  }
+  else if (action === 'back') {
+    if (state.page === 'learn') {
+      state.page = 'learn-pick';
+    } else if (state.page === 'learn-done') {
+      state.page = 'learn-pick';
+    } else if (state.page === 'learn-pick') {
+      state.page = 'home';
+    } else if (state.page === 'disclaimer') {
+      state.page = 'home';
+    } else if (state.page === 'term' || state.page === 'module') {
+      state.page = state.prevPage || 'home';
+    } else {
+      state.page = 'home';
+    }
+    window.scrollTo(0,0);
+    render();
+  }
+  else if (action === 'goterm') {
+    state.prevPage = state.page;
+    state.termId = id;
+    state.page = 'term';
+    window.scrollTo(0,0);
+    render();
+  }
+  else if (action === 'gocat') {
+    state.prevPage = state.page;
+    state.categoryId = id;
+    state.page = 'category';
+    window.scrollTo(0,0);
+    render();
+  }
+  else if (action === 'gomodule') {
+    state.prevPage = state.page;
+    state.moduleId = id;
+    state.page = 'module';
+    window.scrollTo(0,0);
+    render();
+  }
+  else if (action === 'golearn') {
+    state.prevPage = state.page;
+    state.page = 'learn-pick';
+    window.scrollTo(0,0);
+    render();
+  }
+  else if (action === 'startLearn') {
+    const terms = id === 'all' ? [...TERMS] : termsByCategory(id);
+    state.learnTerms = terms;
+    state.learnIdx = 0;
+    state.learnCatId = id;
+    state.page = 'learn';
+    window.scrollTo(0,0);
+    render();
+  }
+  else if (action === 'learnUnderstood') {
+    const t = state.learnTerms[state.learnIdx];
+    if (!understood.includes(t.id)) { understood.push(t.id); saveUnderstood(); }
+    state.learnIdx++;
+    if (state.learnIdx >= state.learnTerms.length) state.page = 'learn-done';
+    window.scrollTo(0,0);
+    render();
+  }
+  else if (action === 'learnSkip') {
+    state.learnIdx++;
+    if (state.learnIdx >= state.learnTerms.length) state.page = 'learn-done';
+    window.scrollTo(0,0);
+    render();
+  }
+  else if (action === 'learnBack') {
+    if (state.learnIdx > 0) { state.learnIdx--; window.scrollTo(0,0); render(); }
+  }
+  else if (action === 'saveName') {
+    const input = document.getElementById('nameInput');
+    const n = input ? input.value.trim() : '';
+    if (n) { saveUserName(n); state.page = 'home'; render(); }
+    else { input && input.focus(); }
+  }
+  else if (action === 'editName') {
+    const n = prompt('Wie heißt du?', userName);
+    if (n !== null && n.trim()) { saveUserName(n.trim()); render(); }
+  }
+  else if (action === 'godisclaimer') {
+    state.prevPage = state.page;
+    state.page = 'disclaimer';
+    window.scrollTo(0,0);
+    render();
+  }
+  else if (action === 'toggleDark') {
+    state.dark = !state.dark;
+    localStorage.setItem('dark', state.dark ? '1' : '0');
+    render();
+  }
+  else if (action === 'toggleFav') {
+    if (favorites.includes(id)) favorites = favorites.filter(f => f !== id);
+    else favorites.push(id);
+    saveFavs();
+    render();
+  }
+  else if (action === 'toggleUnderstood') {
+    if (understood.includes(id)) understood = understood.filter(u => u !== id);
+    else understood.push(id);
+    saveUnderstood();
+    render();
+  }
+  else if (action === 'startQuiz') {
+    state.quizQuestions = getQuizTerms();
+    state.quizQ = 0;
+    state.quizScore = 0;
+    state.quizAnswered = false;
+    state.quizDone = false;
+    render();
+  }
+  else if (action === 'quizAnswer') {
+    if (state.quizAnswered) return;
+    state.quizSelected = parseInt(id);
+    state.quizAnswered = true;
+    const q = state.quizQuestions[state.quizQ];
+    if (state.quizSelected === q.quiz.correct) state.quizScore++;
+    render();
+  }
+  else if (action === 'quizNext') {
+    state.quizQ++;
+    state.quizAnswered = false;
+    if (state.quizQ >= state.quizQuestions.length) {
+      state.quizDone = true;
+      if (state.quizScore > highscore) {
+        highscore = state.quizScore;
+        localStorage.setItem('highscore', highscore);
+      }
+    }
+    render();
+  }
+  else if (action === 'calcTab') {
+    state.calcTab = parseInt(id);
+    render();
+  }
+});
+
+// ============================================================
+// INIT
+// ============================================================
+if (!userName) state.page = 'onboarding';
+render();
+</script>
+</body>
+</html>
