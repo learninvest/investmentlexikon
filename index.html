@@ -60,6 +60,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 /* GRID */
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cat-card-full{grid-column:span 2}
 .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 .cat-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;transition:transform .1s}
 .cat-card:active{transform:scale(.97)}
@@ -225,6 +226,8 @@ const CATEGORIES = [
   {id:'psychologie',name:'Psychologie',icon:'🧠',color:'#ec4899'},
   {id:'broker-kosten',name:'Broker & Kosten',icon:'💸',color:'#64748b'},
   {id:'langfristig',name:'Langfristig',icon:'🌱',color:'#22c55e'},
+  {id:'charts',name:'Charts verstehen',icon:'📊',color:'#6366f1'},
+  {id:'trade-republic',name:'Trade Republic',icon:'📱',color:'#10b981'},
 ];
 
 const TERMS = [
@@ -687,6 +690,198 @@ const TERMS = [
  riskNote:null,
  relatedTerms:['diversifikation','stop-loss','volatilitaet'],
  quiz:{q:'Was ist das Ziel von Risikomanagement?',options:['Gewinne maximieren','Verluste begrenzen','Broker wählen','Steuern sparen'],correct:1}},
+
+// CHARTS
+{id:'chart-lesen',name:'Chart lesen',category:'charts',icon:'📊',difficulty:1,
+ shortExplanation:'Ein Aktienchart zeigt den Kursverlauf über Zeit. Die X-Achse ist die Zeit, die Y-Achse der Preis.',
+ example:'Du siehst: MSCI World Januar bis Dezember. Linie steigt von 100 auf 115 — das ist +15% Rendite in einem Jahr.',
+ whyImportant:'Charts zeigen auf einen Blick, wie sich ein Wertpapier entwickelt hat.',
+ beginnerMistake:'Charts in kurzfristigen Zeiträumen anschauen und Panik bekommen. Immer auch die Langfristansicht checken.',
+ memSatz:'Chart = Kursgeschichte eines Wertpapiers auf einen Blick.',
+ riskNote:null,
+ relatedTerms:['candlestick','trendlinie','volumen-chart'],
+ quiz:{q:'Was zeigt die Y-Achse in einem Aktienchart?',options:['Zeit','Volumen','Preis/Kurs','Dividende'],correct:2}},
+
+{id:'candlestick',name:'Candlestick (Kerze)',category:'charts',icon:'🕯️',difficulty:2,
+ shortExplanation:'Eine Candlestick-Kerze zeigt Eröffnungs-, Schlusskurs, Hoch und Tief eines Zeitraums. Grün = Kurs gestiegen, Rot = Kurs gefallen.',
+ example:'Grüne Kerze: Eröffnung 100€, Schluss 108€, Hoch 110€, Tief 98€. Du siehst sofort: Käufer haben gewonnen.',
+ whyImportant:'Kerzen zeigen viel mehr als eine einfache Linie — Stimmung, Stärke und Richtung.',
+ beginnerMistake:'Einzelne Kerzen überinterpretieren. Immer den Gesamttrend betrachten.',
+ memSatz:'Grüne Kerze = Kurs hoch. Rote Kerze = Kurs runter.',
+ riskNote:null,
+ relatedTerms:['chart-lesen','support','widerstand'],
+ quiz:{q:'Was bedeutet eine rote Candlestick-Kerze?',options:['Kurs gestiegen','Kurs gefallen','Hohe Dividende','Großes Volumen'],correct:1}},
+
+{id:'support',name:'Support (Unterstützung)',category:'charts',icon:'🪨',difficulty:2,
+ shortExplanation:'Support ist eine Preiszone, bei der ein Kurs immer wieder nach unten abprallt — viele Käufer springen dort ein.',
+ example:'Apple fällt jedes Mal auf 170€ und erholt sich dann. 170€ ist die Support-Zone.',
+ whyImportant:'Support-Zonen helfen zu verstehen, wo ein Kurs Halt finden könnte.',
+ beginnerMistake:'Support-Zonen sind keine Garantie. Sie können gebrochen werden — dann wird aus Support oft Widerstand.',
+ memSatz:'Support = Kurs prellt nach oben ab. Boden für den Preis.',
+ riskNote:null,
+ relatedTerms:['widerstand','trendlinie','candlestick'],
+ quiz:{q:'Was ist ein Support-Level?',options:['Höchstkurs','Preiszone wo Kurs nach oben abprallt','Dividendenzahlung','Eröffnungskurs'],correct:1}},
+
+{id:'widerstand',name:'Widerstand (Resistance)',category:'charts',icon:'🛑',difficulty:2,
+ shortExplanation:'Widerstand ist eine Preiszone, bei der ein Kurs immer wieder nach oben abprallt — viele Verkäufer werden dort aktiv.',
+ example:'Bitcoin stößt bei 70.000$ immer wieder an eine Decke und fällt zurück. Das ist Widerstand.',
+ whyImportant:'Widerstandszonen zeigen, wo viele Anleger verkaufen wollen.',
+ beginnerMistake:'Ein Ausbruch über den Widerstand ist bullisch — danach wird Widerstand oft zum neuen Support.',
+ memSatz:'Widerstand = Kurs prellt nach unten ab. Decke für den Preis.',
+ riskNote:null,
+ relatedTerms:['support','ausbruch','trendlinie'],
+ quiz:{q:'Was passiert typischerweise an einer Widerstandszone?',options:['Kurs steigt durch','Kurs prellt nach unten ab','Dividende wird gezahlt','Volumen sinkt'],correct:1}},
+
+{id:'trendlinie',name:'Trendlinie',category:'charts',icon:'📐',difficulty:2,
+ shortExplanation:'Eine Trendlinie verbindet aufeinanderfolgende Tiefs (Aufwärtstrend) oder Hochs (Abwärtstrend) und zeigt die Richtung.',
+ example:'MSCI World: jedes neue Tief liegt höher als das vorherige. Verbindet man sie — das ist die Aufwärtstrendlinie.',
+ whyImportant:'Trendlinien helfen den übergeordneten Trend zu erkennen. Solange der Kurs über der Linie bleibt, ist der Trend intakt.',
+ beginnerMistake:'Trendlinien sind keine Gesetze. Ein Bruch der Trendlinie ist ein Warnsignal, kein Todesurteil.',
+ memSatz:'Trendlinie = Richtung des Marktes auf einen Blick sichtbar machen.',
+ riskNote:null,
+ relatedTerms:['support','widerstand','ausbruch'],
+ quiz:{q:'Was verbindet eine Aufwärtstrendlinie?',options:['Höchstkurse','Aufeinanderfolgende Tiefs','Dividendenzahlungen','Volumenmaxima'],correct:1}},
+
+{id:'volumen-chart',name:'Volumen im Chart',category:'charts',icon:'📶',difficulty:2,
+ shortExplanation:'Volumen zeigt, wie viele Aktien/ETF-Anteile in einem Zeitraum gehandelt wurden. Hohes Volumen bestätigt Bewegungen.',
+ example:'Kurs steigt 5% bei doppeltem Normalvolumen → starkes Signal. Kurs steigt 5% bei niedrigem Volumen → weniger überzeugend.',
+ whyImportant:'Volumen ist der "Motor" hinter Kursbewegungen. Ohne Volumen sind Bewegungen oft nicht nachhaltig.',
+ beginnerMistake:'Kursanstiege ohne Volumen zu viel Gewicht geben — das können Fake-Moves sein.',
+ memSatz:'Hohe Kursänderung + hohes Volumen = glaubwürdige Bewegung.',
+ riskNote:null,
+ relatedTerms:['ausbruch','candlestick','chart-lesen'],
+ quiz:{q:'Was bedeutet ein Kursanstieg mit sehr hohem Volumen?',options:['Kurs fällt bald','Starkes, glaubwürdiges Signal','Dividende steht an','Kurs ist zu teuer'],correct:1}},
+
+{id:'ausbruch',name:'Ausbruch (Breakout)',category:'charts',icon:'🚀',difficulty:2,
+ shortExplanation:'Ein Ausbruch passiert wenn der Kurs eine Widerstands- oder Supportzone mit Schwung durchbricht.',
+ example:'Aktie kämpft wochenlang bei 100€ gegen Widerstand — dann bricht sie mit hohem Volumen auf 108€ durch. Ausbruch!',
+ whyImportant:'Ausbrüche leiten oft starke neue Trendbewegungen ein.',
+ beginnerMistake:'Auf Ausbrüche wetten ohne Volumenbestätigung — viele Ausbrüche sind "Fake-Outs" die dann zurückfallen.',
+ memSatz:'Ausbruch = Kurs durchbricht eine wichtige Zone — oft der Start eines neuen Trends.',
+ riskNote:null,
+ relatedTerms:['widerstand','support','volumen-chart'],
+ quiz:{q:'Was ist ein Breakout?',options:['Kursverlust','Kurs durchbricht wichtige Zone','Dividendenkürzung','Broker-Wechsel'],correct:1}},
+
+{id:'moving-average',name:'Gleitender Durchschnitt (MA)',category:'charts',icon:'〰️',difficulty:3,
+ shortExplanation:'Der gleitende Durchschnitt glättet den Kursverlauf — er zeigt den Durchschnittskurs der letzten X Tage als Linie.',
+ example:'200-Tage-MA: Kurs liegt drüber → langfristiger Aufwärtstrend. Kurs fällt drunter → möglicher Trendwechsel.',
+ whyImportant:'Der 200-Tage-MA ist die wichtigste Trendlinie der Welt — Banken und Fonds beobachten ihn täglich.',
+ beginnerMistake:'MA-Signale funktionieren am besten in Trendmärkten, schlecht in Seitwärtsphasen.',
+ memSatz:'200-Tage-MA = Kurs drüber ist gut, drunter ist Vorsicht angesagt.',
+ riskNote:null,
+ relatedTerms:['trendlinie','chart-lesen','rsi'],
+ quiz:{q:'Was zeigt der 200-Tage gleitende Durchschnitt?',options:['Dividendenhistorie','Durchschnittskurs der letzten 200 Tage','Jahresrendite','Handelsvolumen'],correct:1}},
+
+{id:'rsi',name:'RSI (Relative Strength Index)',category:'charts',icon:'⚡',difficulty:3,
+ shortExplanation:'Der RSI misst, ob ein Wertpapier überkauft (>70) oder überverkauft (<30) ist — auf einer Skala von 0–100.',
+ example:'RSI bei 80 → Aktie ist überkauft, Rücksetzer möglich. RSI bei 25 → überverkauft, mögliche Erholung.',
+ whyImportant:'Hilft einzuschätzen, ob ein Kurs gerade "heiß gelaufen" ist oder günstig sein könnte.',
+ beginnerMistake:'RSI alleine handeln. Ein überkaufter RSI kann noch wochenlang überkauft bleiben — immer andere Signale bestätigen.',
+ memSatz:'RSI >70 = überkauft. RSI <30 = überverkauft.',
+ riskNote:null,
+ relatedTerms:['moving-average','chart-lesen','macd'],
+ quiz:{q:'Was bedeutet ein RSI von 80?',options:['Aktie ist günstig','Aktie ist überkauft','Dividende steht an','Trend ist bearish'],correct:1}},
+
+{id:'macd',name:'MACD',category:'charts',icon:'📡',difficulty:3,
+ shortExplanation:'Der MACD (Moving Average Convergence Divergence) zeigt Trendstärke und mögliche Trendwenden durch das Kreuzen zweier Linien.',
+ example:'MACD-Linie kreuzt die Signallinie von unten → mögliches Kaufsignal. Von oben → mögliches Verkaufssignal.',
+ whyImportant:'Einer der meistgenutzten Indikatoren unter Profi-Tradern.',
+ beginnerMistake:'MACD-Signale in Seitwärtsmärkten nutzen — er funktioniert am besten in Trendmärkten.',
+ memSatz:'MACD = zwei Linien kreuzen sich → mögliche Trendwende.',
+ riskNote:null,
+ relatedTerms:['rsi','moving-average','trendlinie'],
+ quiz:{q:'Was signalisiert ein MACD-Kreuzung von unten nach oben?',options:['Verkaufssignal','Mögliches Kaufsignal','Dividendenzahlung','Seitwärtsmarkt'],correct:1}},
+
+{id:'gap',name:'Gap (Kurslücke)',category:'charts',icon:'🕳️',difficulty:2,
+ shortExplanation:'Ein Gap ist eine Lücke im Chart — der Kurs springt über Nacht oder am Wochenende, sodass kein kontinuierlicher Handel stattfand.',
+ example:'Aktie schließt Freitag bei 100€. Montag öffnet sie bei 112€ wegen guter Quartalszahlen. Der Gap: 100–112€.',
+ whyImportant:'Gaps entstehen oft bei Nachrichten. Man sagt "Gaps werden geschlossen" — oft kommt der Kurs zurück.',
+ beginnerMistake:'Stop-Loss schützt nicht vor Gaps — der Kurs springt über deine Order hinweg.',
+ memSatz:'Gap = Kurslücke im Chart. Meist durch Nachrichten außerhalb der Handelszeiten.',
+ riskNote:'Stop-Loss schützt nicht vor Overnight-Gaps.',
+ relatedTerms:['candlestick','volumen-chart','chart-lesen'],
+ quiz:{q:'Wann entstehen Gaps typischerweise?',options:['Bei niedrigem Volumen','Außerhalb der Handelszeiten durch Nachrichten','Bei Dividendenzahlungen','Im Bullenmarkt'],correct:1}},
+
+// TRADE REPUBLIC
+{id:'tr-sparplan',name:'Sparplan (Trade Republic)',category:'trade-republic',icon:'📅',difficulty:1,
+ shortExplanation:'Bei Trade Republic kannst du einen Sparplan ab 1€/Monat erstellen — er kauft automatisch ETFs oder Aktien zum festgelegten Datum.',
+ example:'Du richtest 50€/Monat auf den MSCI World ETF ein. Jeden 1. des Monats kauft TR automatisch für 50€ Anteile.',
+ whyImportant:'Günstigster und einfachster Weg regelmäßig zu investieren — ohne Ordergebühr bei Sparplänen.',
+ beginnerMistake:'Sparplan einrichten und vergessen, den Freistellungsauftrag zu stellen.',
+ memSatz:'TR Sparplan = ab 1€, kostenlos, automatisch.',
+ riskNote:null,
+ relatedTerms:['sparplan','freistellungsauftrag','etf'],
+ quiz:{q:'Ab welchem Betrag kann man bei Trade Republic einen Sparplan einrichten?',options:['10€','25€','1€','50€'],correct:2}},
+
+{id:'tr-saveback',name:'Saveback',category:'trade-republic',icon:'💵',difficulty:1,
+ shortExplanation:'Saveback ist ein TR-Feature: du bekommst einen Teil deiner Alltagsausgaben (z.B. von der TR-Karte) automatisch als ETF-Anteil gutgeschrieben.',
+ example:'Du zahlst 100€ im Supermarkt mit der TR-Karte → 1% Saveback = 1€ landet automatisch in deinem ETF-Sparplan.',
+ whyImportant:'Passives Investieren ohne extra Aufwand — dein Alltag baut dein Portfolio auf.',
+ beginnerMistake:'Als Hauptstrategie sehen. Saveback ist ein nettes Extra, kein Ersatz für echte Sparpläne.',
+ memSatz:'Saveback = Cashback direkt als ETF-Anteil.',
+ riskNote:null,
+ relatedTerms:['tr-sparplan','etf'],
+ quiz:{q:'Was ist das Saveback-Feature bei Trade Republic?',options:['Zinsen auf Cash','Cashback als ETF-Anteil','Rabatt auf Ordergebühren','Bonuspunkte'],correct:1}},
+
+{id:'tr-fraktioniert',name:'Fraktionierter Kauf',category:'trade-republic',icon:'🔢',difficulty:1,
+ shortExplanation:'Bei TR kannst du Bruchteilsaktien kaufen — du brauchst nicht den vollen Aktienpreis, sondern kannst z.B. für 50€ kaufen.',
+ example:'Amazon kostet 180€ pro Aktie. Du kaufst für 50€ → du bekommst 0,27 Aktien. Trotzdem dabei!',
+ whyImportant:'Macht teure Aktien für jeden zugänglich. Kein Kapital bleibt ungenutzt.',
+ beginnerMistake:'Nicht alle Aktien sind fraktionierbar — bei manchen braucht man den vollen Preis.',
+ memSatz:'Fraktioniert = Bruchteilsaktien kaufen. Kein voller Preis nötig.',
+ riskNote:null,
+ relatedTerms:['aktie','depot','tr-sparplan'],
+ quiz:{q:'Was ermöglicht der fraktionierte Kauf?',options:['Günstigere Steuern','Kauf von Bruchteilen einer Aktie','Zinseszins','Keine Ordergebühr'],correct:1}},
+
+{id:'tr-gettex',name:'Gettex Handelsplatz',category:'trade-republic',icon:'🏛️',difficulty:2,
+ shortExplanation:'Gettex ist die Börse, über die Trade Republic handelt — ein Handelsplatz der Börse München, der lange Handelszeiten (8–22 Uhr) bietet.',
+ example:'Du kaufst um 20:00 Uhr eine Aktie bei TR. Das geht, weil Gettex bis 22 Uhr geöffnet ist — Xetra hat da schon zu.',
+ whyImportant:'Längere Handelszeiten als Xetra (9–17:30 Uhr). Spreads können zu Randzeiten größer sein.',
+ beginnerMistake:'Zu Randzeiten (vor 9 Uhr, nach 17:30 Uhr) handeln — Spreads sind dann oft breiter.',
+ memSatz:'Gettex = TRs Handelsplatz. Lange Zeiten, aber Spreads beachten.',
+ riskNote:null,
+ relatedTerms:['spread','limit-order','broker'],
+ quiz:{q:'Bis wie viel Uhr kann man bei Trade Republic über Gettex handeln?',options:['17:30 Uhr','20:00 Uhr','22:00 Uhr','24:00 Uhr'],correct:2}},
+
+{id:'tr-freistellungsauftrag',name:'Freistellungsauftrag TR',category:'trade-republic',icon:'📋',difficulty:1,
+ shortExplanation:'In der TR-App kannst du deinen Freistellungsauftrag direkt einstellen — bis 1.000€ Kapitalerträge dann steuerfrei.',
+ example:'Einstellungen → Steuern → Freistellungsauftrag → 1.000€ eingeben. TR zieht dann bis 1.000€ keine Steuer ab.',
+ whyImportant:'Ohne Freistellungsauftrag versteuert TR alles automatisch — du musst das Geld über die Steuererklärung zurückholen.',
+ beginnerMistake:'Zu viel einstellen. Gesamt über alle Broker max. 1.000€ (Einzelperson).',
+ memSatz:'Freistellungsauftrag in TR direkt in der App unter Einstellungen/Steuern setzen.',
+ riskNote:null,
+ relatedTerms:['freistellungsauftrag','sparerpauschbetrag','abgeltungssteuer'],
+ quiz:{q:'Wo stellt man den Freistellungsauftrag bei Trade Republic ein?',options:['Im Depot','In der App unter Einstellungen/Steuern','Per Brief','Beim Finanzamt'],correct:1}},
+
+{id:'tr-zinsen',name:'Zinsen auf Cash (TR)',category:'trade-republic',icon:'💰',difficulty:1,
+ shortExplanation:'Trade Republic zahlt Zinsen auf unveranlagtes Geld auf dem Verrechnungskonto — aktuell je nach EZB-Leitzins.',
+ example:'Du hast 2.000€ cash auf TR liegen → TR zahlt dir Zinsen auf dieses Geld, solange es nicht investiert ist.',
+ whyImportant:'Geld das wartet, arbeitet trotzdem ein bisschen. Aber Zinsen auf Cash schlagen langfristig nie einen ETF.',
+ beginnerMistake:'Das Geld dauerhaft auf TR lassen statt zu investieren — Inflation schlägt meist die Zinsen.',
+ memSatz:'TR-Zinsen = gut für Cash das wartet. Kein Ersatz für ETF-Investment.',
+ riskNote:null,
+ relatedTerms:['etf','sparplan','tr-sparplan'],
+ quiz:{q:'Wofür zahlt Trade Republic Zinsen?',options:['Auf ETF-Gewinne','Auf unveranlagtes Cash im Verrechnungskonto','Auf Sparplan-Beträge','Auf Dividenden'],correct:1}},
+
+{id:'tr-limit',name:'Limit-Order bei TR',category:'trade-republic',icon:'🎯',difficulty:2,
+ shortExplanation:'Bei TR kannst du Limit-Orders setzen — die Aktie wird nur gekauft/verkauft, wenn der Kurs dein Limit erreicht.',
+ example:'Aktie steht bei 105€. Du setzt Kauflimit bei 100€. Fällt sie auf 100€, kauft TR automatisch. Kostet 1€ Gebühr.',
+ whyImportant:'Schützt vor schlechten Preisen — besonders bei volatilen Aktien oder zu Randzeiten.',
+ beginnerMistake:'Market-Orders zu Randzeiten (abends, früh) nutzen — Spreads bei Gettex können dann groß sein.',
+ memSatz:'Limit bei TR = 1€ Gebühr, aber du steuerst den Preis.',
+ riskNote:null,
+ relatedTerms:['limit-order','spread','tr-gettex'],
+ quiz:{q:'Was kostet eine Limit-Order bei Trade Republic?',options:['0€','1€','2,99€','0,25%'],correct:1}},
+
+{id:'tr-isin',name:'ISIN — ETF finden',category:'trade-republic',icon:'🔍',difficulty:1,
+ shortExplanation:'Die ISIN ist die internationale Kennnummer jedes Wertpapiers. Bei TR kannst du direkt nach ISIN suchen um den richtigen ETF zu finden.',
+ example:'MSCI World ETF von iShares: ISIN IE00B4L5Y983. In TR eingeben → sofort gefunden.',
+ whyImportant:'Vermeidet Verwechslung zwischen ähnlich benannten ETFs.',
+ beginnerMistake:'Nach Namen suchen und den falschen ETF erwischen — es gibt viele ETFs auf denselben Index.',
+ memSatz:'ISIN = eindeutige ID. Bei TR nach ISIN suchen = keine Verwechslung.',
+ riskNote:null,
+ relatedTerms:['etf','msci-world','depot'],
+ quiz:{q:'Wofür steht ISIN?',options:['International Securities Index Number','International Standard Identification Number','Investition Sicherheits Index Nummer','Index Standard Identification'],correct:1}},
 ];
 
 // MODULES
@@ -695,6 +890,7 @@ const MODULES = [
   {id:'etf-vs-aktie',icon:'⚔️',title:'ETF oder Einzelaktie?',desc:'Vergleich: Wann macht was Sinn?'},
   {id:'steuer-erklaert',icon:'🧾',title:'Steuer einfach erklärt',desc:'Schritt-für-Schritt mit echten Beispielen'},
   {id:'warnung-zocken',icon:'⚠️',title:'Warnung: Zocken an der Börse',desc:'Hebel, Meme-Aktien, FOMO — die Fallen'},
+  {id:'charts-verstehen',icon:'📊',title:'Charts verstehen',desc:'Was sagt ein Chart? Alle Phasen erklärt — mit Grafiken'},
 ];
 
 // ============================================================
@@ -719,6 +915,7 @@ let state = {
   learnTerms: [],
   learnIdx: 0,
   learnCatId: null,
+  catTermIdx: 0,
   tourActive: false,
   tourStep: 0,
   installShown: false,
@@ -847,11 +1044,14 @@ function renderHome() {
   // Install hint: only show if not PWA, mobile, and not already done
   const installDone = localStorage.getItem('installDone');
   const showInstallHint = !isPWA && isMobile && !installDone;
-  const catGrid = CATEGORIES.map(c => `
-    <div class="cat-card" data-action="gocat" data-id="${c.id}">
+  const isOdd = CATEGORIES.length % 2 !== 0;
+  const catGrid = CATEGORIES.map((c, i) => {
+    const full = isOdd && i === CATEGORIES.length - 1;
+    return `<div class="cat-card${full?' cat-card-full':''}" data-action="gocat" data-id="${c.id}">
       <div class="cat-icon">${c.icon}</div>
       <div class="cat-name">${c.name}</div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   return `<div class="page">
     <div id="tour-day" class="day-term" data-action="goterm" data-id="${dayTerm.id}">
@@ -1055,8 +1255,72 @@ function renderTerm() {
 function renderCategory() {
   const cat = getCatById(state.categoryId);
   const terms = termsByCategory(state.categoryId);
-  return `<div class="page">
-    ${terms.map(t => termRow(t)).join('')}
+  const idx = Math.min(state.catTermIdx, terms.length - 1);
+  const t = terms[idx];
+  if (!t) return '<div class="page"><div class="empty">Keine Begriffe.</div></div>';
+
+  const isFav = favorites.includes(t.id);
+  const isUnd = understood.includes(t.id);
+  const related = (t.relatedTerms||[]).map(rid => {
+    const rt = getTermById(rid);
+    return rt ? `<span class="chip" data-action="goterm" data-id="${rid}">${rt.icon} ${rt.name}</span>` : '';
+  }).join('');
+
+  // Chart example SVG for charts category
+  const chartEx = state.categoryId === 'charts' ? getChartExample(t.id) : '';
+
+  // Progress dots (max 12 shown)
+  const total = terms.length;
+  const dots = total <= 15
+    ? terms.map((_,i) => `<div style="width:${i===idx?'18px':'6px'};height:6px;border-radius:3px;background:${i===idx?'var(--green)':understood.includes(terms[i].id)?'#10b98166':'var(--border)'};transition:all .2s;flex-shrink:0"></div>`).join('')
+    : `<span style="font-size:13px;color:var(--text2)">${idx+1} / ${total}</span>`;
+
+  return `<div class="page" id="catPage">
+    <!-- Progress bar -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+      <div style="flex:1;background:var(--bg3);border-radius:3px;height:4px;overflow:hidden">
+        <div style="height:100%;background:var(--green);width:${Math.round(((idx+1)/total)*100)}%;transition:width .3s"></div>
+      </div>
+      <span style="font-size:12px;color:var(--text2);white-space:nowrap">${idx+1} / ${total}</span>
+    </div>
+
+    <!-- Dots -->
+    <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin-bottom:16px">${dots}</div>
+
+    <!-- Term card -->
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="font-size:50px;margin-bottom:8px">${t.icon}</div>
+      <div style="font-size:22px;font-weight:700;color:var(--text)">${t.name}</div>
+      <div style="margin:6px 0"><span class="stars">${stars(t.difficulty)}</span></div>
+    </div>
+
+    <div class="box box-blue"><strong>📖 Einfach erklärt:</strong><br>${t.shortExplanation}</div>
+
+    ${chartEx ? `<div style="background:var(--bg3);border-radius:14px;overflow:hidden;margin-bottom:12px;padding:8px">${chartEx}</div>` : ''}
+
+    <div class="card-sm"><strong>💡 Beispiel:</strong><br><span style="color:var(--text2);font-size:14px">${t.example}</span></div>
+    <div class="box box-orange"><strong>⚠️ Anfänger-Fehler:</strong><br>${t.beginnerMistake}</div>
+    <div class="box box-green"><strong>🧠 Merksatz:</strong><br>${t.memSatz}</div>
+    ${t.riskNote ? `<div class="box box-red"><strong>🚨 Risiko:</strong><br>${t.riskNote}</div>` : ''}
+    ${related ? `<div style="margin-bottom:12px"><strong style="font-size:13px">Verwandte Begriffe:</strong><div class="chips">${related}</div></div>` : ''}
+
+    <!-- Action buttons -->
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <button class="btn ${isUnd?'btn-green':'btn-outline'}" style="flex:1;padding:12px" data-action="toggleUnderstood" data-id="${t.id}">
+        ${isUnd?'✓ Verstanden':'○ Verstanden'}
+      </button>
+      <button class="btn btn-outline" style="flex:0 0 auto;padding:12px 16px" data-action="toggleFav" data-id="${t.id}">
+        ${isFav?'⭐':'☆'}
+      </button>
+    </div>
+
+    <!-- Navigation -->
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-outline" style="flex:1;padding:12px" data-action="catPrev" ${idx===0?'disabled style="opacity:.4"':''}>← Zurück</button>
+      <button class="btn ${isUnd?'btn-outline':'btn-green'}" style="flex:1;padding:12px" data-action="catNext" ${idx===total-1?'disabled style="opacity:.4"':''}>
+        ${idx===total-1?'✓ Fertig!':'Weiter →'}
+      </button>
+    </div>
   </div>`;
 }
 
@@ -1563,6 +1827,7 @@ function renderModule() {
   if (state.moduleId === 'etf-vs-aktie') return renderModuleETFAktie();
   if (state.moduleId === 'steuer-erklaert') return renderModuleSteuer();
   if (state.moduleId === 'warnung-zocken') return renderModuleWarnung();
+  if (state.moduleId === 'charts-verstehen') return renderModuleCharts();
   return '<div class="page">Modul nicht gefunden.</div>';
 }
 
@@ -1630,6 +1895,215 @@ function renderModuleWarnung() {
     <div class="card-sm"><strong>⏰ Day-Trading</strong><br><span style="color:var(--text2);font-size:13px">Studien zeigen: >70% der Day-Trader verlieren Geld. Du konkurrierst mit Algorithmen und Vollzeit-Profis.</span></div>
     <div class="card-sm"><strong>₿ Krypto-Zocken</strong><br><span style="color:var(--text2);font-size:13px">Krypto kann ein kleiner Teil des Portfolios sein — aber als Hauptanlage mit Hebel? Rezept für Ruin.</span></div>
     <div class="box box-green"><strong>Was wirklich funktioniert:</strong><br>MSCI World / FTSE All-World ETF Sparplan + buy-and-hold + Zeit. Langweilig — aber es klappt.</div>
+  </div>`;
+}
+
+// ============================================================
+// CHART EXAMPLES FOR CATEGORY
+// ============================================================
+function getChartExample(termId) {
+  const examples = {
+    'chart-lesen': miniChart([[0,40],[1,43],[2,41],[3,46],[4,50],[5,48],[6,54],[7,58],[8,55],[9,62],[10,67]],
+      '#3b82f6',[{x:0,text:'Start'},{x:5,text:'Zeit'},{x:10,text:'Heute'}],[]),
+
+    'candlestick': `<svg viewBox="0 0 300 100" style="width:100%;display:block">
+      ${[[40,'#10b981',30,55,25,60],[80,'#ef4444',65,45,68,40],[120,'#10b981',48,70,43,74],[160,'#ef4444',72,55,75,50],[200,'#10b981',58,78,53,82],[240,'#10b981',75,95,70,98]]
+        .map(([x,c,o,cl,lo,hi])=>`
+        <line x1="${x}" y1="${100-hi}" x2="${x}" y2="${100-lo}" stroke="${c}" stroke-width="1.5"/>
+        <rect x="${x-8}" y="${100-Math.max(o,cl)}" width="16" height="${Math.abs(o-cl)||2}" fill="${c}" rx="1"/>
+      `).join('')}
+      <text x="10" y="95" font-size="9" fill="#64748b">Grün=steigend  Rot=fallend  Docht=Hoch/Tief</text>
+    </svg>`,
+
+    'support': miniChart([[0,60],[1,58],[2,55],[3,52],[4,50],[5,53],[6,50],[7,52],[8,50],[9,53],[10,57]],
+      '#3b82f6',[{x:0,text:'Preis'},{x:10,text:'Zeit'}],
+      [{x:4,y:50,label:'Support',color:'#10b981'},{x:8,y:50,label:'Support',color:'#10b981'}]),
+
+    'widerstand': miniChart([[0,40],[1,43],[2,47],[3,50],[4,48],[5,45],[6,49],[7,50],[8,47],[9,44],[10,46]],
+      '#ef4444',[{x:0,text:'Preis'},{x:10,text:'Zeit'}],
+      [{x:3,y:50,label:'Widerstand',color:'#ef4444'},{x:7,y:50,label:'Widerstand',color:'#ef4444'}]),
+
+    'trendlinie': miniChart([[0,30],[1,33],[2,31],[3,36],[4,35],[5,39],[6,38],[7,43],[8,42],[9,47],[10,50]],
+      '#10b981',[{x:0,text:'Start'},{x:10,text:'Trend↑'}],
+      [{x:2,y:31,label:'↑',color:'#10b981'},{x:6,y:38,label:'↑',color:'#10b981'}]),
+
+    'volumen-chart': `<svg viewBox="0 0 300 100" style="width:100%;display:block">
+      ${[20,35,25,30,28,60,55,30,25,20].map((h,i)=>`
+        <rect x="${15+i*27}" y="${100-h}" width="20" height="${h}" fill="${h>45?'#10b981':'#3b82f655'}" rx="2"/>
+      `).join('')}
+      <text x="80" y="95" font-size="9" fill="#64748b">Hohes Volumen = starke Bewegung</text>
+    </svg>`,
+
+    'ausbruch': miniChart([[0,40],[1,42],[2,41],[3,43],[4,42],[5,43],[6,44],[7,43],[8,50],[9,56],[10,63]],
+      '#8b5cf6',[{x:0,text:'Konsolidierung'},{x,text:'Ausbruch!'}],
+      [{x:8,y:50,label:'🚀 Breakout',color:'#8b5cf6'}]),
+
+    'moving-average': miniChart([[0,50],[1,48],[2,53],[3,45],[4,55],[5,52],[6,58],[7,54],[8,60],[9,57],[10,65]],
+      '#f59e0b',[{x:0,text:'Kurs'},{x:10,text:'MA glättet'}],
+      [{x:5,y:52,label:'MA200',color:'#f59e0b'}]),
+
+    'rsi': `<svg viewBox="0 0 300 100" style="width:100%;display:block">
+      <rect x="10" y="10" width="280" height="80" fill="none" stroke="#334155" stroke-width="0.5" rx="4"/>
+      <line x1="10" y1="30" x2="290" y2="30" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,3" opacity="0.7"/>
+      <line x1="10" y1="70" x2="290" y2="70" stroke="#10b981" stroke-width="1" stroke-dasharray="4,3" opacity="0.7"/>
+      <text x="292" y="32" font-size="8" fill="#ef4444">70</text>
+      <text x="292" y="72" font-size="8" fill="#10b981">30</text>
+      <polyline points="10,60 40,50 70,35 100,28 130,32 160,45 190,55 220,68 250,72 280,60" fill="none" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round"/>
+      <text x="50" y="95" font-size="9" fill="#64748b">Überkauft >70   Neutral   Überverkauft <30</text>
+    </svg>`,
+
+    'macd': `<svg viewBox="0 0 300 100" style="width:100%;display:block">
+      <line x1="10" y1="50" x2="290" y2="50" stroke="#334155" stroke-width="0.5"/>
+      <polyline points="10,45 40,42 70,38 100,35 130,40 160,48 190,52 220,55 250,50 280,45" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+      <polyline points="10,55 40,52 70,46 100,42 130,44 160,50 190,54 220,57 250,53 280,50" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <circle cx="115" cy="38" r="5" fill="#10b981" opacity="0.8"/>
+      <circle cx="205" cy="53" r="5" fill="#ef4444" opacity="0.8"/>
+      <text x="30" y="95" font-size="9" fill="#64748b">Blau=MACD  Gelb=Signal  ●Kauf  ●Verkauf</text>
+    </svg>`,
+
+    'gap': miniChart([[0,50],[1,52],[2,51],[3,53],[4,52],[5,62],[6,63],[7,61],[8,64],[9,63],[10,65]],
+      '#ec4899',[{x:0,text:'Freitag'},{x:5,text:'Montag'},{x:10,text:'Zeit'}],
+      [{x:4.5,y:57,label:'GAP ↑',color:'#ec4899'}]),
+  };
+  return examples[termId] || '';
+}
+
+// ============================================================
+// CHARTS VERSTEHEN MODULE
+// ============================================================
+function miniChart(points, color, labels, annotations) {
+  const W=320, H=100, pL=8, pR=8, pT=12, pB=20;
+  const xs = points.map(p=>p[0]), ys = points.map(p=>p[1]);
+  const minX=Math.min(...xs), maxX=Math.max(...xs);
+  const minY=Math.min(...ys), maxY=Math.max(...ys);
+  const rangeY = maxY-minY || 1;
+  const xOf = x => pL + ((x-minX)/(maxX-minX||1))*(W-pL-pR);
+  const yOf = y => pT + (1-(y-minY)/rangeY)*(H-pT-pB);
+  const pts = points.map(p=>`${xOf(p[0])},${yOf(p[1])}`).join(' ');
+  const area = `M${xOf(xs[0])},${yOf(ys[0])} ${points.map(p=>`L${xOf(p[0])},${yOf(p[1])}`).join(' ')} L${xOf(xs[xs.length-1])},${H-pB} L${xOf(xs[0])},${H-pB} Z`;
+
+  const annSvg = (annotations||[]).map(a => {
+    const cx = xOf(a.x), cy = yOf(a.y);
+    return `<circle cx="${cx}" cy="${cy}" r="4" fill="${a.color||'#f59e0b'}" stroke="#0f172a" stroke-width="1.5"/>
+            <text x="${cx}" y="${cy-8}" font-size="9" fill="${a.color||'#f59e0b'}" text-anchor="middle" font-weight="600">${a.label}</text>`;
+  }).join('');
+
+  const labelSvg = (labels||[]).map(l =>
+    `<text x="${xOf(l.x)}" y="${H-5}" font-size="9" fill="#64748b" text-anchor="middle">${l.text}</text>`
+  ).join('');
+
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block">
+    <defs><linearGradient id="cg${color.replace('#','')}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${color}" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="${color}" stop-opacity="0.02"/>
+    </linearGradient></defs>
+    <path d="${area}" fill="url(#cg${color.replace('#','')})"/>
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    ${annSvg}${labelSvg}
+  </svg>`;
+}
+
+function chartCard(title, subtitle, color, points, labels, annotations, explanation, badge) {
+  return `<div class="card" style="margin-bottom:14px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <div style="flex:1">
+        <div style="font-size:16px;font-weight:700;color:var(--text)">${title}</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px">${subtitle}</div>
+      </div>
+      ${badge ? `<span class="badge ${badge.cls}">${badge.text}</span>` : ''}
+    </div>
+    <div style="background:var(--bg3);border-radius:12px;overflow:hidden;margin-bottom:10px">
+      ${miniChart(points, color, labels, annotations)}
+    </div>
+    <div style="font-size:13px;color:var(--text2);line-height:1.7">${explanation}</div>
+  </div>`;
+}
+
+function renderModuleCharts() {
+  return `<div class="page">
+    <div class="section-title" style="margin-top:0">📊 Charts verstehen</div>
+    <div class="section-sub">Jede Phase des Marktes — visuell erklärt</div>
+
+    ${chartCard(
+      '🐂 Bullenmarkt', 'Steigende Kurse — Optimismus',
+      '#10b981',
+      [[0,30],[1,35],[2,33],[3,40],[4,45],[5,43],[6,52],[7,58],[8,55],[9,65],[10,70]],
+      [{x:0,text:'Start'},{x:5,text:'Mitte'},{x:10,text:'ATH'}],
+      [{x:10,y:70,label:'ATH',color:'#10b981'}],
+      'Der Markt steigt über einen längeren Zeitraum. Anleger sind optimistisch, Wirtschaft wächst. <strong>Was tun?</strong> Investiert bleiben, nicht in Panik verkaufen weil "zu teuer". Historisch dauern Bullenmärkte viel länger als Bärenmärkte.',
+      {cls:'badge-green',text:'Günstig zum Halten'}
+    )}
+
+    ${chartCard(
+      '🐻 Bärenmarkt', 'Kurs fällt 20%+ vom Hoch',
+      '#ef4444',
+      [[0,70],[1,65],[2,60],[3,55],[4,52],[5,48],[6,44],[7,42],[8,45],[9,47],[10,50]],
+      [{x:0,text:'Hoch'},{x:7,text:'Tief'},{x:10,text:'Erholung'}],
+      [{x:0,y:70,label:'Hoch',color:'#ef4444'},{x:7,y:42,label:'Tief',color:'#f59e0b'}],
+      'Kurs fällt 20% oder mehr vom letzten Hoch. Angst und Pessimismus bestimmen den Markt. <strong>Was tun?</strong> Sparplan weiterlaufen lassen — du kaufst jetzt günstiger. Wer im Crash verkauft, realisiert Verluste und verpasst die Erholung.',
+      {cls:'badge-red',text:'Nicht verkaufen!'}
+    )}
+
+    ${chartCard(
+      '📉 Korrektur', 'Kurzer Rückgang 10–20%',
+      '#f59e0b',
+      [[0,60],[1,62],[2,65],[3,60],[4,55],[5,53],[6,57],[7,62],[8,67],[9,70],[10,72]],
+      [{x:0,text:'Vor'},{x:5,text:'Tief'},{x:10,text:'Nach'}],
+      [{x:5,y:53,label:'-15%',color:'#f59e0b'}],
+      'Eine gesunde Pause im Aufwärtstrend. Kurs fällt 10–20%, dann geht\'s weiter aufwärts. Korrekturen passieren im Schnitt alle 1–2 Jahre. <strong>Was tun?</strong> Normal — aushalten oder günstig nachkaufen.',
+      {cls:'badge-orange',text:'Normal & gesund'}
+    )}
+
+    ${chartCard(
+      '💥 Crash', 'Schneller Einbruch in Tagen/Wochen',
+      '#ef4444',
+      [[0,65],[1,63],[2,55],[3,42],[4,35],[5,30],[6,28],[7,32],[8,38],[9,45],[10,52]],
+      [{x:0,text:'Vorher'},{x:6,text:'Tief'},{x:10,text:'Erholung'}],
+      [{x:6,y:28,label:'−57%',color:'#ef4444'}],
+      'Heftiger, schneller Einbruch — oft 30–50% in wenigen Wochen (z.B. Corona 2020, Finanzkrise 2008). Fühlt sich katastrophal an, ist aber jedes Mal überwunden worden. <strong>Was tun?</strong> Nicht verkaufen. Wer hielt, hatte meist in 1–3 Jahren alles zurück.',
+      {cls:'badge-red',text:'Aushalten & halten'}
+    )}
+
+    ${chartCard(
+      '🚀 Rally', 'Starker Kursanstieg nach Tief',
+      '#10b981',
+      [[0,28],[1,35],[2,43],[3,50],[4,55],[5,58],[6,62],[7,65],[8,68],[9,70],[10,72]],
+      [{x:0,text:'Tief'},{x:5,text:'Rally'},{x:10,text:'Normalisierung'}],
+      [{x:0,y:28,label:'Start',color:'#10b981'}],
+      'Schneller, starker Aufschwung — oft direkt nach einem Crash. Die stärksten Börsentage der Geschichte passieren während Bärenmärkten und Crashs. <strong>Wichtig:</strong> Wer im Crash verkauft hat, verpasst genau diese Rally.',
+      {cls:'badge-green',text:'Stärkste Tage hier'}
+    )}
+
+    ${chartCard(
+      '↔️ Seitwärtsmarkt', 'Kurs geht nirgendwohin',
+      '#3b82f6',
+      [[0,50],[1,53],[2,48],[3,52],[4,49],[5,53],[6,47],[7,51],[8,50],[9,54],[10,49]],
+      [{x:0,text:'Start'},{x:5,text:'Mitte'},{x:10,text:'Ende'}],
+      [],
+      'Kurs schwankt in einer engen Spanne, kein klarer Trend. Typisch in Konsolidierungsphasen. <strong>Was tun?</strong> Sparplan weiterlaufen lassen — du sammelst Anteile. Seitwärtsmärkte enden meistens mit einem Ausbruch nach oben oder unten.',
+      {cls:'badge-blue',text:'Geduld zahlt sich aus'}
+    )}
+
+    ${chartCard(
+      '📈 Allzeithoch (ATH)', 'Höchster je erreichter Kurs',
+      '#8b5cf6',
+      [[0,40],[1,45],[2,50],[3,55],[4,58],[5,62],[6,65],[7,63],[8,67],[9,70],[10,74]],
+      [{x:10,text:'ATH'}],
+      [{x:10,y:74,label:'ATH 🏔️',color:'#8b5cf6'}],
+      'Der höchste je erzielte Kurs. Viele haben Angst "auf dem Höchststand" zu kaufen. Studien zeigen: wer an jedem Allzeithoch kaufte, hatte langfristig genauso gute Renditen — weil neue ATHs immer wieder gebrochen werden.',
+      {cls:'badge-purple',text:'Kein Grund zur Panik'}
+    )}
+
+    ${chartCard(
+      '⚡ Turning Point (Zinseszins)', 'Ab hier arbeitet Geld mehr als du',
+      '#f59e0b',
+      [[0,5],[2,7],[4,10],[6,14],[8,20],[10,28],[12,38],[14,52],[16,70],[18,92],[20,120]],
+      [{x:0,text:'Start'},{x:10,text:'Turning P.'},{x:20,text:'Heute'}],
+      [{x:10,y:28,label:'⚡',color:'#f59e0b'}],
+      'Nicht eine Kursphase, sondern ein Meilenstein im Zinseszins-Chart: der Punkt, ab dem die Rendite deines Kapitals größer ist als deine monatliche Einzahlung. Ab hier übernimmt der Zinseszins — dein Geld wächst exponentiell, fast egal was du noch einzahlst.',
+      {cls:'badge-orange',text:'Der magische Moment'}
+    )}
+
   </div>`;
 }
 
@@ -2027,6 +2501,23 @@ function bindEvents() {
     el.addEventListener('blur',   () => render());
   });
 
+  // Swipe gestures for category view
+  if (state.page === 'category') {
+    const pg = document.getElementById('catPage');
+    if (pg) {
+      let tx = 0;
+      pg.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive:true});
+      pg.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        if (Math.abs(dx) > 50) {
+          const terms = termsByCategory(state.categoryId);
+          if (dx < 0 && state.catTermIdx < terms.length - 1) { state.catTermIdx++; window.scrollTo(0,0); render(); }
+          else if (dx > 0 && state.catTermIdx > 0) { state.catTermIdx--; window.scrollTo(0,0); render(); }
+        }
+      }, {passive:true});
+    }
+  }
+
   // Interactive Zinseszins chart
   const czChart = document.getElementById('czChart');
   if (czChart) {
@@ -2138,9 +2629,17 @@ document.body.addEventListener('click', e => {
   else if (action === 'gocat') {
     state.prevPage = state.page;
     state.categoryId = id;
+    state.catTermIdx = 0;
     state.page = 'category';
     window.scrollTo(0,0);
     render();
+  }
+  else if (action === 'catPrev') {
+    if (state.catTermIdx > 0) { state.catTermIdx--; window.scrollTo(0,0); render(); }
+  }
+  else if (action === 'catNext') {
+    const terms = termsByCategory(state.categoryId);
+    if (state.catTermIdx < terms.length - 1) { state.catTermIdx++; window.scrollTo(0,0); render(); }
   }
   else if (action === 'gomodule') {
     state.prevPage = state.page;
